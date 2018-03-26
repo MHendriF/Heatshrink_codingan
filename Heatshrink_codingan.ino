@@ -209,21 +209,29 @@ void setup() {
 
   //uint8_t test_data[] = { 0x80, 0x40, 0x60, 0x50, 0x38, 0x20 };
   //uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z'};
-  //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd'};
-  const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '2', '3', '4', '5', '2', '1'};
+  //const char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '2', '3', '4', '5', '2', '1'};
+  //const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3'};
+ 
+  //100 data heterogen
+  const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'a', 'a'};
+  //const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
+
+  //100 data homogen
+  //const uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+  //const uint8_t test_data[] = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'};
   
-  uint32_t orig_size = 62;//strlen(test_data);
+  uint32_t orig_size = 100;            //strlen(test_data);
   uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
   uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
   memcpy(orig_buffer, test_data, orig_size);
   uint32_t t1 = micros();
   compress(orig_buffer,orig_size,comp_buffer,comp_size);
   uint32_t t2 = micros();
-  decompress(comp_buffer,comp_size,decomp_buffer,decomp_size);
+  //decompress(comp_buffer,comp_size,decomp_buffer,decomp_size);
   uint32_t t3 = micros();
   Serial.print("Size of orginal data: ");Serial.println(orig_size);
   Serial.print("Size of compressed data: ");Serial.println(comp_size);
-//
+
   Serial.println();
   Serial.print("Test data: ");
   for(i = 0; i < 62; i++){
@@ -244,11 +252,11 @@ void setup() {
     Serial.print(", ");
   }Serial.println();
 
-  Serial.print("Decompressed data: ");
-  for(i = 0; i < decomp_size; i++){
-    Serial.print(decomp_buffer[i]);
-    Serial.print(", ");
-  }Serial.println();Serial.println();
+//  Serial.print("Decompressed data: ");
+//  for(i = 0; i < decomp_size; i++){
+//    Serial.print(decomp_buffer[i]);
+//    Serial.print(", ");
+//  }Serial.println();Serial.println();
   
   float comp_ratio = ((float) orig_size / comp_size);
   Serial.print("Compression ratio: ");Serial.println(comp_ratio);
