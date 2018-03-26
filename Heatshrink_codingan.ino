@@ -200,11 +200,19 @@ void setup() {
   uint32_t length;
   //write some data into the compression buffer
   //const char test_data[] = "\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00";
+  //const char test_data[] = "\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03";
+  //const char test_data[] = "\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00";
   //const char test_data[] = "\1\0\0\2\0\0\3\0\0\3\0\0\4\0\0\4\0\0\3\0\0\1\0\0\4\0\0\8\0\0\1\0\0\8\0\0\7\0\0\5\0\0";
-  const char test_data[] = "\1\1\2\3\4\5\1\2\11\12\0\2\4\5\3\4\5\6\7\0\9\12\11\14\3\3\3\4\5\6\7\2\0\7\6\5\4\33\0\13\5\44";
+  //const char test_data[] = "\1\1\2\3\4\5\1\2\11\12\0\2\4\5\3\4\5\6\7\0\9\12\11\14\3\3\3\4\5\6\7\2\0\7\6\5\4\33\0\13\5\44";
   //const char test_data[] = "\a\b\c\d\e\f\g\a\a\a\w\e\e\r\g\h\b\b\c\d\r\t\e\q\q\q\e\e\e\c\c\e\c\d\e\d\a\d\h\s\r\z";
+  //const char test_data[] = "\'a'\'b'\'c'\'d'\'e'\'f'\'g'\'a'\'a'\'a'\'w'\'e'\'e'\'r'\'g'\'h'\'b'\'b'\'c'\'d'\'r'\'t'\'u'\'q'\'q'\'q'\'e'\'e'\'e'\'c'\'c'\'e'\'c'\'d'\'e'\'d'\'a'\'d'\'h'\'s'\'r'\'z'";
+
+  //uint8_t test_data[] = { 0x80, 0x40, 0x60, 0x50, 0x38, 0x20 };
+  //uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z'};
+  //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd'};
+  const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '2', '3', '4', '5', '2', '1'};
   
-  uint32_t orig_size = 42;//strlen(test_data);
+  uint32_t orig_size = 62;//strlen(test_data);
   uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
   uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
   memcpy(orig_buffer, test_data, orig_size);
@@ -215,10 +223,10 @@ void setup() {
   uint32_t t3 = micros();
   Serial.print("Size of orginal data: ");Serial.println(orig_size);
   Serial.print("Size of compressed data: ");Serial.println(comp_size);
-
+//
   Serial.println();
   Serial.print("Test data: ");
-  for(i = 0; i < 42; i++){
+  for(i = 0; i < 62; i++){
     Serial.print(test_data[i]);
     Serial.print(", ");
   }Serial.println();
