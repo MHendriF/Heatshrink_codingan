@@ -19,7 +19,7 @@
 #error HEATSHRINK_DYNAMIC_ALLOC must be false for static allocation test suite.
 #endif
 
-#define HEATSHRINK_DEBUG
+//#define HEATSHRINK_DEBUG
 
 static heatshrink_encoder hse;
 static heatshrink_decoder hsd;
@@ -199,8 +199,9 @@ void setup() {
   int i;
   uint32_t length;
   //write some data into the compression buffer
-  const char test_data[] = "\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00";
-  //const char test_data[] = "\1\1\2\3\4\5\1\2\11\12\0\2\4\5\3\4\5\6\7\8\9\12\11\14\3\3\3\4\5\6\7\2\8\7\6\5\4\3\0\13\5\4";
+  //const char test_data[] = "\x01\x00\x00\x02\x00\x00\x03\x00\x00\x03\x00\x00\x04\x00\x00\x04\x00\x00\x03\x00\x00\x01\x00\x00\x04\x00\x00\x08\x00\x00\x01\x00\x00\x08\x00\x00\x07\x00\x00\x05\x00\x00";
+  //const char test_data[] = "\1\0\0\2\0\0\3\0\0\3\0\0\4\0\0\4\0\0\3\0\0\1\0\0\4\0\0\8\0\0\1\0\0\8\0\0\7\0\0\5\0\0";
+  const char test_data[] = "\1\1\2\3\4\5\1\2\11\12\0\2\4\5\3\4\5\6\7\0\9\12\11\14\3\3\3\4\5\6\7\2\0\7\6\5\4\33\0\13\5\44";
   //const char test_data[] = "\a\b\c\d\e\f\g\a\a\a\w\e\e\r\g\h\b\b\c\d\r\t\e\q\q\q\e\e\e\c\c\e\c\d\e\d\a\d\h\s\r\z";
   
   uint32_t orig_size = 42;//strlen(test_data);
@@ -215,6 +216,13 @@ void setup() {
   Serial.print("Size of orginal data: ");Serial.println(orig_size);
   Serial.print("Size of compressed data: ");Serial.println(comp_size);
 
+  Serial.println();
+  Serial.print("Test data: ");
+  for(i = 0; i < 42; i++){
+    Serial.print(test_data[i]);
+    Serial.print(", ");
+  }Serial.println();
+  
   Serial.println();
   Serial.print("Origin data: ");
   for(i = 0; i < orig_size; i++){
