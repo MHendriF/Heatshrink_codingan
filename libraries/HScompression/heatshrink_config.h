@@ -3,7 +3,7 @@
 
 /* Should functionality assuming dynamic allocation be used? */
 #ifndef HEATSHRINK_DYNAMIC_ALLOC
-#define HEATSHRINK_DYNAMIC_ALLOC 1
+#define HEATSHRINK_DYNAMIC_ALLOC 0
 #endif
 
 #if HEATSHRINK_DYNAMIC_ALLOC
@@ -13,7 +13,7 @@
 #else
     /* Required parameters for static configuration */
     #define HEATSHRINK_STATIC_INPUT_BUFFER_SIZE 32
-    #define HEATSHRINK_STATIC_WINDOW_BITS 6
+    #define HEATSHRINK_STATIC_WINDOW_BITS 5
     #define HEATSHRINK_STATIC_LOOKAHEAD_BITS 3
 #endif
 

@@ -42,48 +42,30 @@ static void dump_buf(char *name, uint8_t *buf, uint16_t count) {
 
 static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, int log_lvl) {
     heatshrink_encoder_reset(&hse);
-    heatshrink_decoder_reset(&hsd);
     size_t comp_sz = input_size + (input_size/2) + 4;
-    size_t decomp_sz = input_size + (input_size/2) + 4;
     uint8_t *comp = malloc(comp_sz);
-    uint8_t *decomp = malloc(decomp_sz);
     if (comp == NULL) 
       Serial.print(F("FAIL: Malloc fail!"));
-    if (decomp == NULL) 
-      Serial.print(F("FAIL: Malloc fail!"));
     memset(comp, 0, comp_sz);
-    memset(decomp, 0, decomp_sz);
 
     size_t count = 0;
-
+    uint32_t sunk = 0;
+    uint32_t polled = 0;
+    
     if (log_lvl > 1) {
         Serial.print(F("\n^^ COMPRESSING\n"));
         dump_buf("input", input, input_size);
     }
-
-    //
-//    #ifdef HEATSHRINK_DEBUG
-//    Serial.print(F("\n^^ COMPRESSING\n"));
-//    dump_buf("input", input, input_size);
-//    #endif
-
-    uint32_t sunk = 0;
-    uint32_t polled = 0;
+    
     while (sunk < input_size) {
         //ASSERT(heatshrink_encoder_sink(&hse, &input[sunk], input_size - sunk, &count) >= 0);
         heatshrink_encoder_sink(&hse, &input[sunk], input_size - sunk, &count);
         sunk += count;
         if (log_lvl > 1){
-        //  printf("^^ sunk %zd\n", count);
           Serial.print(F("^^ sunk "));
           Serial.print(count);
           Serial.print(F("\n"));
         }
-//        #ifdef HEATSHRINK_DEBUG
-//        Serial.print(F("^^ sunk "));
-//        Serial.print(count);
-//        Serial.print(F("\n"));
-//        #endif
         
         if (sunk == input_size) {
             //ASSERT_EQ(HSER_FINISH_MORE, heatshrink_encoder_finish(&hse));
@@ -96,49 +78,52 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, in
             //ASSERT(pres >= 0);
             polled += count;
             if (log_lvl > 1){
-             // printf("^^ polled %zd\n", count);
               Serial.print(F("^^ polled "));
               Serial.print(count);
               Serial.print(F("\n"));
             }
-            //
-//            #ifdef HEATSHRINK_DEBUG
-//            Serial.print(F("^^ polled "));
-//            Serial.print(polled);
-//            Serial.print(F("\n"));
-//            #endif
         } while (pres == HSER_POLL_MORE);
         //ASSERT_EQ(HSER_POLL_EMPTY, pres);
         if (polled >= comp_sz)  //output_size == comp_sz
-            //FAILm("compression should never expand that much");
-            Serial.print(F("FAIL: Exceeded the size of the output buffer!"));
+            Serial.print(F("FAIL: Compression should never expand that much!"));
         if (sunk == input_size) {
             //ASSERT_EQ(HSER_FINISH_DONE, heatshrink_encoder_finish(&hse));
             heatshrink_encoder_finish(&hse);
         }
     }
-    if (log_lvl > 0) 
-      //printf("in: %u compressed: %u ", input_size, polled);
-      Serial.print(F("FAIL: Exceeded the size of the output buffer!\n"));
-    
-    //
-//    #ifdef HEATSHRINK_DEBUG
-//    Serial.print(F("in: "));
-//    Serial.print(input_size);
-//    Serial.print(F(" compressed: "));
-//    Serial.print(polled);
-//    Serial.print(F(" \n"));
-//    #endif
-    
-    uint32_t compressed_size = polled;
-    sunk = 0;
-    polled = 0;
+    if (log_lvl > 0){
+        Serial.print(F("in: "));
+        Serial.print(input_size);
+        Serial.print(F(" compressed: "));
+        Serial.print(polled);
+        Serial.print(F(" \n")); 
+    }
+   // uint32_t compressed_size = polled;
+   // decompress_and_expand_and_check(comp, compressed_size, 0);
+    //free(comp);
+    //free(decomp);
+   // PASS();
+}
+
+static int decompress_and_expand_and_check(uint8_t *input, uint32_t input_size, int log_lvl) {
+
+    heatshrink_decoder_reset(&hsd);
+    size_t decomp_sz = input_size + (input_size/2) + 4;
+    uint8_t *decomp = malloc(decomp_sz);
+    if (decomp == NULL) 
+      Serial.print(F("FAIL: Malloc fail!"));
+    memset(decomp, 0, decomp_sz);
+
+    size_t count = 0;
+    uint32_t sunk = 0;
+    uint32_t polled = 0;
     
     if (log_lvl > 1) {
-        printf("\n^^ DECOMPRESSING\n");
-        dump_buf("comp", comp, compressed_size);
+        Serial.print(F("\n^^ DECOMPRESSING\n"));
+       // dump_buf("comp", comp, compressed_size);
+        dump_buf("comp", input, input_size);
     }
-    while (sunk < compressed_size) {
+    while (sunk < input_size) {
         //ASSERT(heatshrink_decoder_sink(&hsd, &comp[sunk], compressed_size - sunk, &count) >= 0);
         heatshrink_decoder_sink(&hsd, &input[sunk], input_size - sunk, &count);
         sunk += count;
@@ -147,7 +132,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, in
           Serial.print(count);
           Serial.print(F("\n"));
         }
-        if (sunk == compressed_size) {
+        if (sunk == input_size) {
             //ASSERT_EQ(HSDR_FINISH_MORE, heatshrink_decoder_finish(&hsd));
             heatshrink_decoder_finish(&hsd);
         }
@@ -165,23 +150,29 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, in
             }
         } while (pres == HSDR_POLL_MORE);
         //ASSERT_EQ(HSDR_POLL_EMPTY, pres);
-        if (sunk == compressed_size) {
+        if (sunk == input_size) {
             HSD_finish_res fres = heatshrink_decoder_finish(&hsd);
             //ASSERT_EQ(HSDR_FINISH_DONE, fres);
         }
 
         if (polled > input_size) {
-            //FAILm("Decompressed data is larger than original input");
             Serial.print(F("FAIL: Decompressed data is larger than original input!"));
         }
     }
-    if (log_lvl > 0) 
-      printf("decompressed: %u\n", polled);
+    if (log_lvl > 0){
+        Serial.print(F("in: "));
+        Serial.print(input_size);
+        Serial.print(F(" decompressed: "));
+        Serial.print(polled);
+        Serial.print(F(" \n")); 
+        //printf("decompressed: %u\n", polled);
+    }
+      
     if (polled != input_size) {
         //FAILm("Decompressed length does not match original input length");
         Serial.print(F("FAIL: Decompressed length does not match original input length!"));
     }
-
+    
     if (log_lvl > 1) 
         dump_buf("decomp", decomp, polled);
     for (size_t i=0; i<input_size; i++) {
@@ -197,7 +188,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, in
         }
         //ASSERT_EQ(input[i], decomp[i]);
     }
-    free(comp);
+    //free(comp);
     free(decomp);
    // PASS();
 }
@@ -224,10 +215,10 @@ TEST pseudorandom_data_should_match(uint32_t size, uint32_t seed) {
 /******************************************************************************/
 //GREATEST_MAIN_DEFS();
 
-#define BUFFER_SIZE 256
-uint8_t orig_buffer[BUFFER_SIZE];
-uint8_t comp_buffer[BUFFER_SIZE];
-uint8_t decomp_buffer[BUFFER_SIZE];
+//#define BUFFER_SIZE 256
+//uint8_t orig_buffer[BUFFER_SIZE];
+//uint8_t comp_buffer[BUFFER_SIZE];
+//uint8_t decomp_buffer[BUFFER_SIZE];
 
 int main(int argc, char **argv)
 {
@@ -238,17 +229,15 @@ int main(int argc, char **argv)
     Serial.begin(9600);
     delay(5000);
     int i;
-     
     uint32_t length;
     //write some data into the compression buffer
-    Serial.println("Test1");
 
-    const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
+    uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
     uint32_t orig_size = 80;            //strlen(test_data);
-    uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
-    uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-    memcpy(orig_buffer, test_data, orig_size);
-    compress_and_expand_and_check(orig_buffer, orig_size, 1);
+   // uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
+   // uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
+    //memcpy(orig_buffer, test_data, orig_size);
+    compress_and_expand_and_check(test_data, orig_size, 2);
     //compress_and_expand_and_check(input, size, 0);
     
  //   GREATEST_MAIN_BEGIN();      /* command-line arguments, initialization. */
@@ -263,17 +252,7 @@ int main(int argc, char **argv)
     Serial.println(sizeof(heatshrink_encoder));
     Serial.print("sizeof(heatshrink_decoder): ");
     Serial.println(sizeof(heatshrink_decoder));
-    
-    int panjang_size = sizeof(heatshrink_encoder);
-//    memcpy(orig_buffer, heatshrink_encoder, panjang_size);
-    
-//    Serial.println();
-//    Serial.print("Test data: ");
-//    for(i = 0; i < sizeof(heatshrink_encoder); i++){
-//  //    Serial.print(heatshrink_encoder[i]);
-//      Serial.print(", ");
-//    }Serial.println();
-    
+
 //    RUN_SUITE(integration);
  //   GREATEST_MAIN_END();        /* display results */
     
