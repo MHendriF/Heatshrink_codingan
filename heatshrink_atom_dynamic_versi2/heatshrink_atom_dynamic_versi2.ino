@@ -18,16 +18,10 @@
 #error Must set HEATSHRINK_DYNAMIC_ALLOC to 1 for dynamic allocation test suite.
 #endif
 
-//#define HEATSHRINK_DEBUG
-
 SUITE(encoding);
 SUITE(decoding);
 SUITE(regression);
 SUITE(integration);
-
-#ifdef HEATSHRINK_HAS_THEFT
-SUITE(properties);
-#endif
 
 typedef struct {
     uint8_t log_lvl;
@@ -43,14 +37,6 @@ static void dump_buf(char *name, uint8_t *buf, uint16_t count) {
     }
 }
 
-
-//typedef struct {
-//    uint8_t log_lvl;
-//    uint8_t window_sz2;
-//    uint8_t lookahead_sz2;
-//    size_t decoder_input_buffer_size;
-//} cfg_info;
-
 static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cfg_info *cfg) {
     heatshrink_encoder *hse = heatshrink_encoder_alloc(cfg->window_sz2,
         cfg->lookahead_sz2);
@@ -58,28 +44,28 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg->decoder_input_buffer_size,
         cfg->window_sz2, cfg->lookahead_sz2);
    //ASSERT(hsd);
-//    size_t comp_sz = input_size + (input_size/2) + 4;
-//    size_t decomp_sz = input_size + (input_size/2) + 4;
-    size_t comp_sz = 254;
-    size_t decomp_sz = 254;
+    size_t comp_sz = input_size + (input_size/2) + 4;
+    size_t decomp_sz = input_size + (input_size/2) + 4;
+//    size_t comp_sz = 254;
+//    size_t decomp_sz = 254;
     uint8_t *comp = (uint8_t*)malloc(comp_sz);
     uint8_t *decomp = (uint8_t*)malloc(decomp_sz);
     if (comp == NULL) 
-      Serial.print(F("FAIL: Malloc fail!"));
+      Serial.println(F("FAIL: Malloc fail!"));
     if (decomp == NULL) 
-      Serial.print(F("FAIL: Malloc fail!"));
+      Serial.println(F("FAIL: Malloc fail!"));
     memset(comp, 0, comp_sz);
     memset(decomp, 0, decomp_sz);
 
     size_t count = 0;
-
+    size_t sunk = 0;
+    size_t polled = 0;
+    
     if (cfg->log_lvl > 1) {
         Serial.print(F("\n^^ COMPRESSING\n"));
         dump_buf("input", input, input_size);
     }
-
-    size_t sunk = 0;
-    size_t polled = 0;
+    
     while (sunk < input_size) {
         HSE_sink_res esres = heatshrink_encoder_sink(hse, &input[sunk], input_size - sunk, &count);
         //ASSERT(esres >= 0);
@@ -120,6 +106,20 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       Serial.print(polled);
       Serial.print(F(" \n")); 
     }
+
+    //tambahan
+    Serial.print("Origin data: ");
+    for(int i = 0; i < input_size; i++){
+      Serial.print(input[i]);
+      Serial.print(", ");
+    }Serial.println();
+  
+    Serial.print("Compressed data: ");
+    for(int i = 0; i < polled; i++){
+      Serial.print(comp[i]);
+      Serial.print(", ");
+    }Serial.println();
+    
     size_t compressed_size = polled;
     sunk = 0;
     polled = 0;
@@ -174,7 +174,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
     if (cfg->log_lvl > 0){
         Serial.print(F("in: "));
-        Serial.print(input_size);
+        Serial.print(compressed_size);
         Serial.print(F(" decompressed: "));
         Serial.print(polled);
         Serial.print(F(" \n")); 
@@ -186,9 +186,12 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
 
     if (cfg->log_lvl > 1) dump_buf("decomp", decomp, polled);
-//    for (uint32_t i=0; i<input_size; i++) {
-//        if (input[i] != decomp[i]) {
-//            printf("*** mismatch at %d\n", i);
+    for (uint32_t i=0; i<input_size; i++) {
+        if (input[i] != decomp[i]) {
+           // printf("*** mismatch at %d\n", i);
+            Serial.print(F("*** mismatch at: "));
+            Serial.print(i);
+            Serial.print(F(" \n")); 
 //            if (0) {
 //                for (uint32_t j=0; j<=/*i*/ input_size; j++) {
 //                    printf("in[%d] == 0x%02x ('%c') => out[%d] == 0x%02x ('%c')  %c\n",
@@ -197,14 +200,22 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
 //                        input[j] == decomp[j] ? ' ' : 'X');
 //                }
 //            }
-//        }
-//        ASSERT_EQ(input[i], decomp[i]);
-//    }
+        }
+        //ASSERT_EQ(input[i], decomp[i]);
+    }
+
+    //tambahan
+    Serial.print("Decompressed data: ");
+    for(int i = 0; i < polled; i++){
+      Serial.print(decomp[i]);
+      Serial.print(", ");
+    }Serial.println();
+  
     free(comp);
     free(decomp);
     heatshrink_encoder_free(hse);
     heatshrink_decoder_free(hsd);
- //   PASS();
+//    PASS();
 }
 
 
@@ -221,20 +232,31 @@ int main(int argc, char **argv)
     delay(5000);
 
     uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
+    //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
+    //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+
+    //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+
     uint32_t orig_size = 80;            //strlen(test_data);
     
     cfg_info cfg;
     cfg.log_lvl = 2;
-    cfg.window_sz2 = 7;
-    cfg.lookahead_sz2 = 3;
+    cfg.window_sz2 = 6;
+    cfg.lookahead_sz2 = 4;
     cfg.decoder_input_buffer_size = 64;
     
     compress_and_expand_and_check(test_data, orig_size, &cfg);
 
-    Serial.print("sizeof(heatshrink_encoder): ");
-    Serial.println(sizeof(heatshrink_encoder));
-    Serial.print("sizeof(heatshrink_decoder): ");
-    Serial.println(sizeof(heatshrink_decoder));
+    Serial.println();
+    Serial.print("Window size: ");
+    Serial.println(cfg.window_sz2);
+    Serial.print("Lookahead size: ");
+    Serial.println(cfg.lookahead_sz2);
+    
+//    Serial.print("sizeof(heatshrink_encoder): ");
+//    Serial.println(sizeof(heatshrink_encoder));
+//    Serial.print("sizeof(heatshrink_decoder): ");
+//    Serial.println(sizeof(heatshrink_decoder));
 
     for ( ;; )
         delay(100);
