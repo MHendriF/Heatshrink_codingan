@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <Arduino.h>
+#include <QuickStats.h>
 
 #include "heatshrink_encoder.h"
 #include "heatshrink_decoder.h"
@@ -18,10 +19,10 @@
 #error Must set HEATSHRINK_DYNAMIC_ALLOC to 1 for dynamic allocation test suite.
 #endif
 
-SUITE(encoding);
-SUITE(decoding);
-SUITE(regression);
-SUITE(integration);
+//SUITE(encoding);
+//SUITE(decoding);
+//SUITE(regression);
+//SUITE(integration);
 
 typedef struct {
     uint8_t log_lvl;
@@ -221,6 +222,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
 
 /******************************************************************************/
 //GREATEST_MAIN_DEFS();
+QuickStats stats; //initialize an instance of this class
 
 int main(int argc, char **argv)
 {
@@ -230,14 +232,33 @@ int main(int argc, char **argv)
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
     delay(5000);
-
+    int length_data;
+    float readings[80], stdeviasi;
+    
     uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
     //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
     //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
 
     //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
 
-    uint32_t orig_size = 80;            //strlen(test_data);
+    length_data = sizeof(test_data)/sizeof(test_data[0]);
+    Serial.print("Panjang data: ");
+    Serial.println(length_data);
+
+     //convert char to float
+    for(int i=0; i<length_data; i++){
+      readings[i] =  test_data[i] - '0';
+    }
+  
+//    Serial.print(F("*** Reading data: "));
+//    for(int i = 0; i < length_data; i++){
+//      Serial.print(readings[i]);
+//      Serial.print(", ");
+//    }Serial.println();
+//    
+      Serial.print("Standard Deviation: ");
+      stdeviasi = stats.stdev(readings,length_data);
+      Serial.println(stdeviasi);
     
     cfg_info cfg;
     cfg.log_lvl = 2;
@@ -245,7 +266,7 @@ int main(int argc, char **argv)
     cfg.lookahead_sz2 = 4;
     cfg.decoder_input_buffer_size = 64;
     
-    compress_and_expand_and_check(test_data, orig_size, &cfg);
+    compress_and_expand_and_check(test_data, length_data, &cfg);
 
     Serial.println();
     Serial.print("Window size: ");
@@ -253,11 +274,6 @@ int main(int argc, char **argv)
     Serial.print("Lookahead size: ");
     Serial.println(cfg.lookahead_sz2);
     
-//    Serial.print("sizeof(heatshrink_encoder): ");
-//    Serial.println(sizeof(heatshrink_encoder));
-//    Serial.print("sizeof(heatshrink_decoder): ");
-//    Serial.println(sizeof(heatshrink_decoder));
-
     for ( ;; )
         delay(100);
 }

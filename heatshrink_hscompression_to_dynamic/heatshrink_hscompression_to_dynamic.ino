@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include <ctype.h>
-#include <assert.h>
+#include <QuickStats.h>
 
 #include "heatshrink_common.h"
 #include "heatshrink_config.h"
@@ -20,7 +20,7 @@
 #error HEATSHRINK_DYNAMIC_ALLOC must be 1 for dynamic allocation test suite.
 #endif
 
-#define HEATSHRINK_DEBUG
+//#define HEATSHRINK_DEBUG
 
 //static void fill_with_pseudorandom_letters(uint8_t *buf, uint16_t size, uint32_t seed) {
 //    uint64_t rn = 9223372036854775783; // prime under 2^64
@@ -182,6 +182,7 @@ static void compress(uint8_t *input, uint32_t input_size, uint8_t *output, uint3
 //}
 
 /******************************************************************************/
+QuickStats stats; //initialize an instance of this class
 
 #define BUFFER_SIZE 256
 uint8_t orig_buffer[BUFFER_SIZE];
@@ -194,62 +195,67 @@ void setup() {
   Serial.begin(9600);
   delay(5000);
   int i;
-  uint32_t length;
-  
-  //uint8_t test_data[] = { 0x80, 0x40, 0x60, 0x50, 0x38, 0x20 };
-  //uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z'};
-  //const char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '2', '3', '4', '5', '2', '1'};
-  //const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3'};
-
+  float readings[80], stdeviasi;
+ 
   //80 data heterogen
   //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f'};
   const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
-
-  //100 data heterogen
-  //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'a', 'a'};
-  //const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
-
-  //100 data homogen
-  //const uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
-  //const uint8_t test_data[] = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'};
+  
+  uint32_t orig_size = 80;
+  uint32_t length_data;
+  length_data = sizeof(test_data)/sizeof(test_data[0]);
+  Serial.print("Panjang data: ");
+  Serial.println(length_data);
+  //convert char to float
+  for(int i=0; i<length_data; i++){
+      readings[i] =  test_data[i] - '0';
+  }
+  //Serial.print("Standard Deviation: ");
+  //stdeviasi = stats.stdev(readings,length_data);
+  //Serial.println(stdeviasi);
 
   uint8_t window_sz2, lookahead_sz2;
   window_sz2 = 5;
   lookahead_sz2 = 4;
   
-  uint32_t orig_size = 80;            //strlen(test_data);
   uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
   uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-  memcpy(orig_buffer, test_data, orig_size);
+  memcpy(orig_buffer, test_data, length_data);
   uint32_t t1 = micros();
-  compress(orig_buffer, orig_size, comp_buffer, comp_size, window_sz2, lookahead_sz2);
+  compress(orig_buffer, length_data, comp_buffer, comp_size, window_sz2, lookahead_sz2);
   uint32_t t2 = micros();
   //decompress(comp_buffer, comp_size, decomp_buffer, decomp_size, window_sz2, lookahead_sz2);
   uint32_t t3 = micros();
   Serial.print("Size of orginal data: ");Serial.println(orig_size);
   Serial.print("Size of compressed data: ");Serial.println(comp_size);
 
-  Serial.println();
-  Serial.print("Test data: ");
-  for(i = 0; i < 80; i++){
-    Serial.print(test_data[i]);
-    Serial.print(", ");
-  }Serial.println();
-  
-  Serial.println();
-  Serial.print("Origin data: ");
-  for(i = 0; i < orig_size; i++){
-    Serial.print(orig_buffer[i]);
-    Serial.print(", ");
-  }Serial.println();
+//  Serial.println();
+//  Serial.print("Test data: ");
+//  for(i = 0; i < 80; i++){
+//    Serial.print(test_data[i]);
+//    Serial.print(", ");
+//  }Serial.println();
+//  
+//  Serial.println();
+//  Serial.print("Origin data: ");
+//  for(i = 0; i < length_data; i++){
+//    Serial.print(orig_buffer[i]);
+//    Serial.print(", ");
+//  }Serial.println();
+//
+//  Serial.print("Compressed data: ");
+//  for(i = 0; i < comp_size; i++){
+//    Serial.print(comp_buffer[i]);
+//    Serial.print(", ");
+//  }Serial.println();
 
-  Serial.print("Compressed data: ");
-  for(i = 0; i < comp_size; i++){
-    Serial.print(comp_buffer[i]);
-    Serial.print(", ");
-  }Serial.println();
-
-  float comp_ratio = ((float) orig_size / comp_size);
+  Serial.println();
+  Serial.print("Window size: ");
+  Serial.println(window_sz2);
+  Serial.print("Lookahead size: ");
+  Serial.println(lookahead_sz2);
+    
+  float comp_ratio = ((float) length_data / comp_size);
   Serial.print("Compression ratio: ");Serial.println(comp_ratio);
   Serial.print("Time to compress: ");Serial.println((t2-t1)/1e6,6);
   Serial.print("Time to decompress: ");Serial.println((t3-t2)/1e6,6);
