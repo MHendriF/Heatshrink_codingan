@@ -13,7 +13,7 @@
 //float readings[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
 //float readings[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
 
-float readings[80];
+float readings[200];
 int numreadings;
 
 QuickStats stats; //initialize an instance of this class
@@ -23,12 +23,12 @@ void setup()
   Serial.begin(9600); 
   srand((unsigned)time(NULL));
    
-  for(int i=0; i<80; i++){
+  for(int i=0; i<100; i++){
     //readings[i] = i+1;
     //readings[i] = (float)rand()/RAND_MAX;
     //readings[i] = (rand() / (float)RAND_MAX * 19) + 1;
     readings[i] = (float)rand() / RAND_MAX * 20;
-    Serial.println(readings[i]);
+    //Serial.println(readings[i]);
   }
   
   numreadings = sizeof(readings)/sizeof(readings[0]);
