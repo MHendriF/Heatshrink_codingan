@@ -97,16 +97,16 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
 
     //tambahan
-    Serial.print("Origin data: ");
-    for(int i = 0; i < input_size; i++){
-      Serial.print(input[i]);
-      Serial.print(", ");
-    }Serial.println();
-  
-    Serial.print("Compressed data: ");
+//    Serial.print("Origin data: ");
+//    for(int i = 0; i < input_size; i++){
+//      Serial.print(input[i]);
+//      Serial.print(", ");
+//    }Serial.println();
+//  
+//    Serial.print("Compressed data: ");
     for(int i = 0; i < polled; i++){
       Serial.print(comp[i]);
-      Serial.print(", ");
+      Serial.print(" ");
     }Serial.println();
     
     size_t compressed_size = polled;
@@ -198,19 +198,10 @@ int main(int argc, char **argv)
     pinMode(arduinoLED, OUTPUT);      // Configure the onboard LED for output
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
-    delay(5000);
-    //uint32_t orig_size = 100;  
+    //delay(5000);
     int length_data;
     float readings[1000], stdeviasi;
-  
-    //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
-
-    //100 data
-    //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
-    //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
-    //uint8_t test_data[] = {1, 2, 3, 1, 2, 0, 3, 4, 5, 1, 1, 2, 3, 9, 0, 1, 1, 0, 0, 0, 3, 1, 1, 2, 3, 3, 1, 1, 2, 2, 3, 4, 5, 2, 2, 3, 4, 5, 1, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7, 8, 3, 4, 2, 3, 2, 8, 0, 3, 4, 5, 2, 1, 4, 5, 2, 2, 3, 4, 5, 0, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7}; 
-    //uint8_t test_data[] = {'1', 'r', 't', 'y', '!', '5', '0', '-', '+', 'p', 'o', 'p', '[', ']', 'p', 'o', 'p', '4', '4', '5', '6', 'd', 'd', 'g', 's', 'F', 'o', 'p', 'o', '1', '1', '2', '3', '2', '3', '1', '1', '9', '6', '5', '3', '3', '1', 's', 'd', 'f', '1', '1', '1', '1', '9', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-', '+', 'p', '1', '1', '1', '1', '1', '1', '1','t', 'y', '!', '5', '0', '-', '+', 'p', '1', '1', '1', '1', '1', '1', '4', '3', '4', 'R', 'T', 'S', '1', '!', '-', '+', '=', 's', 'p', 'o', '[', '}', '1', '1', '3', '1', '1', '3', '2', 'p', 'g', 'h', 'v', 'b', 'g', '3', '4', ',', '.', '/', '3', '4', '1', '1', 'E', 'Q', 'W', '1', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-', '1', '1', '1', '1', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-'};
-
+   
     //float test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
     //uint8_t test_data[] = {'1.2', '1.2', '1.3', '1.4', '1.5', '1.1', '1.9', '1.2', '1.3', '1.4', '2.5', '2.3', '2.3', '2.2', '2.3', '2.4', '2.5', '2.6', '2.4', '2.2', '3.3', '3.4', '3.1', '3.1', '3.2', '3.3', '3.4', '3.5', '3.5', '3.6', '4.5', '4.2', '4.1', '4.4', '4.5', '4.6', '4.4', '4.4', '4.3', '4.3', '5.3', 5.3, 5.3, 5.3, 5.3, 5.3, 5.5, 5.8, 5.6, 5.5, 6.4, 6.3, 6.2, 6.0, 6.0, 6.0, 6.0, 6.8, 6.7, 6.2, 7.1, 7.1, 7.1, 7.9, 7.7, 7.5, 7.5, 7.4, 7.3, 7.2, 8.1, 8.2, 8.2, 8.3, 8.4, 8.5, 8.9, 8.0, 8.0, 8.3, 9.9, 9.8, 9.7, 9.6, 9.5, 9.4, 9.3, 9.2, 9.2, 9.2, 10.3, 10.5, 10.9, 10.1, 10.2, 10.5, 10.4, 10.3, 10.2, 10.1};
     //char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
@@ -219,8 +210,8 @@ int main(int argc, char **argv)
     //char test_data[] = "YER\yN(#.<U**L:wa$vdvHb^=d(rZx[W?,T)3j<zJ#~;'tp-^sAT,`QXe!))*~F'$~6HP\+;HvvLG+gA]b#_@6gB.Zd6g\"~b4<R5v>9u<Gwp{xD@xec}ACH2}=W]a^+7;3_E`$-g#z35_H'bzV<'__MX'pN\;C=e/r;G#Ph{[y\"#{&K<PGSdePge,tp>]DPekHCsL}MQ6N~J\"?k3KtjaP3#pP?.dFLrkzq=/\"UdBeA-adhUHC&]#T*+\"8{.FaK5^";
     //char test_data [] = "R!c962kE?e&5\"ZdYrxyGWQPqLFC[#+{~\Y#*'2h#S#.rXgZubmh@hTvX/uK}c^$DSu?hb)}gAjRf^%zd6@3WNVvH_Y@nn(]a$Dk^Z$Ckt:`PFs+\q&$PaCW`G/-.q+$,*dyZNc5E9}'vS'RDp*b`a2h#<Kvxfu^_:RA!ZA~QET6bW*]En2hc.6rB7FUC_^[Y#ZfQ@sjc^X#Y9!x^]R,}rfBDA-PBAt(n)8~VVPNCr&M.8qMdyqEELPj#&9TuE)TjB;S6(sM~{%M>%:\^k^\">-a*R[ABS'Qt85Q^ZL2.C6A'5GJt;j2**^nd!x)V`}y~3TESL&$K-f)9#n/\:Mfw*Z*B*&d;y`6.\"G5y<hZ/Gmq-.:F;*Zq%G#gt\"WPhKg7mgmZ+T$:zF)Bs5^'8n^w5&yU&}B5EaFY2$SLZSZdE~U`gP/7Zcw7ss=NrcPY3`4B:S\kX]V`=S(Z=n}74RZ}'BZ,#ryE4T]b;>LuS`g]Zp%B6SM#xGmUz\$F,%vH5/Z8Z[";
 
-    //char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne ora";
-    uint8_t test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne ora";
+    char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
+    //uint8_t test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne orasadddddddddddddddddddddddd fafdsfsdf dsfsdfsdfdsfds";
     
     //uint8_t test_data [] = "WsPaQcrAxzDtumFAzfPEaggqHYWeKTrTPKRsuySKeHKDoHcJFPtMyPYvexgdSnddmnsUieWPLfbkMrmosAVDdgqAGOuarLSLXLoDIWPgplOrxRCNXnKSFTSTimjgdBqhzrbvAlSGmYKKYPVoqKMXhlqQFqSZuXnxIcxhhfIyDbSkRIonFfLbpCZpQqcikHYseMXEtZsAqxaENKFBIKWZEEblGVwAqXBdluyPVwMiCWHOjHKCkfgJDDUAsepwKfZl";
     //uint8_t test_data [] = "9522186260603957281653815791006807810117480113809012982259839961971697042715029456965105163209229165350812842927165990893822538270874005862376875858705828453753386261288911274383094074592519252497575684057759481069842769293789839160413281937264708649079892";
@@ -233,8 +224,14 @@ int main(int argc, char **argv)
     Serial.print("Panjang data: ");
     Serial.println(length_data);
 
+    if(length_data > 584){
+      Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
+      delay(4000);
+      return 0;
+    }
+
+    //print raw data
     for(int counter = 0; counter < length_data; counter++){
-      //printf ("%c ", test_data[counter]);
       Serial.print(test_data[counter]);
     }
     Serial.println();
@@ -254,7 +251,7 @@ int main(int argc, char **argv)
     Serial.println(stdeviasi);
     
     cfg_info cfg;
-    cfg.log_lvl = 2;
+    cfg.log_lvl = 1;
       
 //    if(stdeviasi > 2){
 //      cfg.window_sz2 = 7;
@@ -289,8 +286,11 @@ int main(int argc, char **argv)
     Serial.print("Lookahead size: ");
     Serial.println(cfg.lookahead_sz2);
     
-    for ( ;; )
-        delay(3000);
+    for ( ;; ){
+      Serial.println("B");
+      delay(7000);
+    }
+        
 }
 
 
