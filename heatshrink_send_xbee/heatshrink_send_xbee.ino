@@ -61,7 +61,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     
     while (sunk < input_size) {
         HSE_sink_res esres = heatshrink_encoder_sink(hse, &input[sunk], input_size - sunk, &count);
-        //ASSERT(esres >= 0);
         sunk += count;
         if (cfg->log_lvl > 1){
           Serial.print(F("^^ sunk "));
@@ -69,7 +68,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
           Serial.print(F("\n"));
         }
         if (sunk == input_size) {
-            //ASSERT_EQ(HSER_FINISH_MORE, heatshrink_encoder_finish(hse));
             heatshrink_encoder_finish(hse);
         }
 
@@ -84,11 +82,9 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
               Serial.print(F("\n"));
             }
         } while (pres == HSER_POLL_MORE);
-        //ASSERT_EQ(HSER_POLL_EMPTY, pres);
         if (polled >= comp_sz) 
           Serial.print(F("FAIL: Compression should never expand that much!"));
         if (sunk == input_size) {
-            //ASSERT_EQ(HSER_FINISH_DONE, heatshrink_encoder_finish(hse));
             heatshrink_encoder_finish(hse);
         }
     }
@@ -122,9 +118,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
         dump_buf("comp", comp, compressed_size);
     }
     while (sunk < compressed_size) {
-        //ASSERT(heatshrink_decoder_sink(hsd, &comp[sunk], compressed_size - sunk, &count) >= 0);
         heatshrink_decoder_sink(hsd, &comp[sunk], compressed_size - sunk, &count);
-        //heatshrink_decoder_sink(hsd, &comp[sunk], compressed_size - sunk, &count);
         sunk += count;
         if (cfg->log_lvl > 1){
           Serial.print(F("^^ sunk "));
@@ -132,7 +126,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
           Serial.print(F("\n"));
         }
         if (sunk == compressed_size) {
-            //ASSERT_EQ(HSDR_FINISH_MORE, heatshrink_decoder_finish(hsd));
             heatshrink_decoder_finish(hsd);
         }
 
@@ -140,8 +133,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
         do {
             pres = heatshrink_decoder_poll(hsd, &decomp[polled],
                 decomp_sz - polled, &count);
-            //ASSERT(pres >= 0);
-            //ASSERT(count > 0);
             polled += count;
             if (cfg->log_lvl > 1){
               Serial.print(F("^^ polled "));
@@ -149,14 +140,11 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
               Serial.print(F("\n"));
             }
         } while (pres == HSDR_POLL_MORE);
-        //ASSERT_EQ(HSDR_POLL_EMPTY, pres);
         if (sunk == compressed_size) {
             HSD_finish_res fres = heatshrink_decoder_finish(hsd);
-            //ASSERT_EQ(HSDR_FINISH_DONE, fres);
         }
 
         if (polled > input_size) {
-            //printf("\nExpected %zd, got %zu\n", (size_t)input_size, polled);
             Serial.print(F("nExpected "));
             Serial.print((size_t)input_size);
             Serial.print(F(" got: "));
@@ -171,10 +159,8 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
         Serial.print(F(" decompressed: "));
         Serial.print(polled);
         Serial.print(F(" \n")); 
-        //printf("decompressed: %zu\n", polled);
     }
     if (polled != input_size) {
-        //FAILm("Decompressed length does not match original input length");
         Serial.print(F("FAIL: Decompressed length does not match original input length!"));
     }
 
@@ -184,17 +170,8 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
            // printf("*** mismatch at %d\n", i);
             Serial.print(F("*** mismatch at: "));
             Serial.print(i);
-            Serial.print(F(" \n")); 
-//            if (0) {
-//                for (uint32_t j=0; j<=/*i*/ input_size; j++) {
-//                    printf("in[%d] == 0x%02x ('%c') => out[%d] == 0x%02x ('%c')  %c\n",
-//                        j, input[j], isprint(input[j]) ? input[j] : '.',
-//                        j, decomp[j], isprint(decomp[j]) ? decomp[j] : '.',
-//                        input[j] == decomp[j] ? ' ' : 'X');
-//                }
-//            }
+            Serial.print(F(" \n"));
         }
-        //ASSERT_EQ(input[i], decomp[i]);
     }
 
     //tambahan
@@ -208,7 +185,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     free(decomp);
     heatshrink_encoder_free(hse);
     heatshrink_decoder_free(hsd);
-//    PASS();
 }
 
 
@@ -226,8 +202,7 @@ int main(int argc, char **argv)
     //uint32_t orig_size = 100;  
     int length_data;
     float readings[1000], stdeviasi;
-    //float readings[] = {1, 2, 3, 1, 2, 0, 3, 4, 5, 1, 1, 2, 3, 9, 0, 1, 1, 0, 0, 0, 3, 1, 1, 2, 3, 3, 1, 1, 2, 2, 3, 4, 5, 2, 2, 3, 4, 5, 1, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7, 8, 3, 4, 2, 3, 2, 8, 0, 3, 4, 5, 2, 1, 4, 5, 2, 2, 3, 4, 5, 0, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7};
-    
+  
     //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
 
     //100 data
@@ -238,7 +213,7 @@ int main(int argc, char **argv)
 
     //float test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
     //uint8_t test_data[] = {'1.2', '1.2', '1.3', '1.4', '1.5', '1.1', '1.9', '1.2', '1.3', '1.4', '2.5', '2.3', '2.3', '2.2', '2.3', '2.4', '2.5', '2.6', '2.4', '2.2', '3.3', '3.4', '3.1', '3.1', '3.2', '3.3', '3.4', '3.5', '3.5', '3.6', '4.5', '4.2', '4.1', '4.4', '4.5', '4.6', '4.4', '4.4', '4.3', '4.3', '5.3', 5.3, 5.3, 5.3, 5.3, 5.3, 5.5, 5.8, 5.6, 5.5, 6.4, 6.3, 6.2, 6.0, 6.0, 6.0, 6.0, 6.8, 6.7, 6.2, 7.1, 7.1, 7.1, 7.9, 7.7, 7.5, 7.5, 7.4, 7.3, 7.2, 8.1, 8.2, 8.2, 8.3, 8.4, 8.5, 8.9, 8.0, 8.0, 8.3, 9.9, 9.8, 9.7, 9.6, 9.5, 9.4, 9.3, 9.2, 9.2, 9.2, 10.3, 10.5, 10.9, 10.1, 10.2, 10.5, 10.4, 10.3, 10.2, 10.1};
-   // char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
+    //char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
 
     //char test_data[] = "']U`}]+NDm'-}6`E6u$':Zk%@Zf2sz%7_P,*?Dv5eTde<ABmB~FM{P<\"5>R\"c@?h{/zJ%GD>A_{]7j6a27Z\"[`s!tqSc2=>z2%E?,y~M}$G<&DdH-;qQ{u8B%VzvDgPm";   
     //char test_data[] = "YER\yN(#.<U**L:wa$vdvHb^=d(rZx[W?,T)3j<zJ#~;'tp-^sAT,`QXe!))*~F'$~6HP\+;HvvLG+gA]b#_@6gB.Zd6g\"~b4<R5v>9u<Gwp{xD@xec}ACH2}=W]a^+7;3_E`$-g#z35_H'bzV<'__MX'pN\;C=e/r;G#Ph{[y\"#{&K<PGSdePge,tp>]DPekHCsL}MQ6N~J\"?k3KtjaP3#pP?.dFLrkzq=/\"UdBeA-adhUHC&]#T*+\"8{.FaK5^";
