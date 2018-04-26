@@ -198,11 +198,11 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
 
     //tambahan
-    Serial.print("Origin data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(decomp[i]);
-      Serial.print(", ");
-    }Serial.println();
+//    Serial.print("Origin data: ");
+//    for(int i = 0; i < polled; i++){
+//      Serial.print(decomp[i]);
+//      Serial.print(", ");
+//    }Serial.println();
   
     free(comp);
     free(decomp);
@@ -234,7 +234,7 @@ int main(int argc, char **argv)
     //uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
     //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
     //uint8_t test_data[] = {1, 2, 3, 1, 2, 0, 3, 4, 5, 1, 1, 2, 3, 9, 0, 1, 1, 0, 0, 0, 3, 1, 1, 2, 3, 3, 1, 1, 2, 2, 3, 4, 5, 2, 2, 3, 4, 5, 1, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7, 8, 3, 4, 2, 3, 2, 8, 0, 3, 4, 5, 2, 1, 4, 5, 2, 2, 3, 4, 5, 0, 2, 2, 0, 0, 2, 7, 8, 7, 7, 7}; 
-    //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+    //uint8_t test_data[] = {'1', 'r', 't', 'y', '!', '5', '0', '-', '+', 'p', 'o', 'p', '[', ']', 'p', 'o', 'p', '4', '4', '5', '6', 'd', 'd', 'g', 's', 'F', 'o', 'p', 'o', '1', '1', '2', '3', '2', '3', '1', '1', '9', '6', '5', '3', '3', '1', 's', 'd', 'f', '1', '1', '1', '1', '9', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-', '+', 'p', '1', '1', '1', '1', '1', '1', '1','t', 'y', '!', '5', '0', '-', '+', 'p', '1', '1', '1', '1', '1', '1', '4', '3', '4', 'R', 'T', 'S', '1', '!', '-', '+', '=', 's', 'p', 'o', '[', '}', '1', '1', '3', '1', '1', '3', '2', 'p', 'g', 'h', 'v', 'b', 'g', '3', '4', ',', '.', '/', '3', '4', '1', '1', 'E', 'Q', 'W', '1', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-', '1', '1', '1', '1', 'T', 'R', 'S', 'r', 't', 'y', '!', '5', '0', '-'};
 
     //float test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0'};
     //uint8_t test_data[] = {'1.2', '1.2', '1.3', '1.4', '1.5', '1.1', '1.9', '1.2', '1.3', '1.4', '2.5', '2.3', '2.3', '2.2', '2.3', '2.4', '2.5', '2.6', '2.4', '2.2', '3.3', '3.4', '3.1', '3.1', '3.2', '3.3', '3.4', '3.5', '3.5', '3.6', '4.5', '4.2', '4.1', '4.4', '4.5', '4.6', '4.4', '4.4', '4.3', '4.3', '5.3', 5.3, 5.3, 5.3, 5.3, 5.3, 5.5, 5.8, 5.6, 5.5, 6.4, 6.3, 6.2, 6.0, 6.0, 6.0, 6.0, 6.8, 6.7, 6.2, 7.1, 7.1, 7.1, 7.9, 7.7, 7.5, 7.5, 7.4, 7.3, 7.2, 8.1, 8.2, 8.2, 8.3, 8.4, 8.5, 8.9, 8.0, 8.0, 8.3, 9.9, 9.8, 9.7, 9.6, 9.5, 9.4, 9.3, 9.2, 9.2, 9.2, 10.3, 10.5, 10.9, 10.1, 10.2, 10.5, 10.4, 10.3, 10.2, 10.1};
@@ -244,14 +244,15 @@ int main(int argc, char **argv)
     //char test_data[] = "YER\yN(#.<U**L:wa$vdvHb^=d(rZx[W?,T)3j<zJ#~;'tp-^sAT,`QXe!))*~F'$~6HP\+;HvvLG+gA]b#_@6gB.Zd6g\"~b4<R5v>9u<Gwp{xD@xec}ACH2}=W]a^+7;3_E`$-g#z35_H'bzV<'__MX'pN\;C=e/r;G#Ph{[y\"#{&K<PGSdePge,tp>]DPekHCsL}MQ6N~J\"?k3KtjaP3#pP?.dFLrkzq=/\"UdBeA-adhUHC&]#T*+\"8{.FaK5^";
     //char test_data [] = "R!c962kE?e&5\"ZdYrxyGWQPqLFC[#+{~\Y#*'2h#S#.rXgZubmh@hTvX/uK}c^$DSu?hb)}gAjRf^%zd6@3WNVvH_Y@nn(]a$Dk^Z$Ckt:`PFs+\q&$PaCW`G/-.q+$,*dyZNc5E9}'vS'RDp*b`a2h#<Kvxfu^_:RA!ZA~QET6bW*]En2hc.6rB7FUC_^[Y#ZfQ@sjc^X#Y9!x^]R,}rfBDA-PBAt(n)8~VVPNCr&M.8qMdyqEELPj#&9TuE)TjB;S6(sM~{%M>%:\^k^\">-a*R[ABS'Qt85Q^ZL2.C6A'5GJt;j2**^nd!x)V`}y~3TESL&$K-f)9#n/\:Mfw*Z*B*&d;y`6.\"G5y<hZ/Gmq-.:F;*Zq%G#gt\"WPhKg7mgmZ+T$:zF)Bs5^'8n^w5&yU&}B5EaFY2$SLZSZdE~U`gP/7Zcw7ss=NrcPY3`4B:S\kX]V`=S(Z=n}74RZ}'BZ,#ryE4T]b;>LuS`g]Zp%B6SM#xGmUz\$F,%vH5/Z8Z[";
 
-    //char test_data [] = "u5oiUM89zb3hN3gfdAUE3JpoLiSySAMk4GGF8eDtNhD832ybb7Kbw80l31r2YwpnOSk4ig9nXYYbQuIzL7YAWHLeChHNbh1XEGs7RI7sBHEgQK32B9UaU3d1iiFYxznHQfuu2U5uc1gAKVdg3LvPOIfuLNLzPGF8imd2347ediQzrlpmnJHMgSbAffn3tQWj5vpz1IWSSZEmQZ6eF0DCi7pcJtQUGvKi1aKa0Moyp6Hhwu2MEtSxz41afScAe9AQ";
-
+    //char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne ora";
+    uint8_t test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne ora";
+    
     //uint8_t test_data [] = "WsPaQcrAxzDtumFAzfPEaggqHYWeKTrTPKRsuySKeHKDoHcJFPtMyPYvexgdSnddmnsUieWPLfbkMrmosAVDdgqAGOuarLSLXLoDIWPgplOrxRCNXnKSFTSTimjgdBqhzrbvAlSGmYKKYPVoqKMXhlqQFqSZuXnxIcxhhfIyDbSkRIonFfLbpCZpQqcikHYseMXEtZsAqxaENKFBIKWZEEblGVwAqXBdluyPVwMiCWHOjHKCkfgJDDUAsepwKfZl";
     //uint8_t test_data [] = "9522186260603957281653815791006807810117480113809012982259839961971697042715029456965105163209229165350812842927165990893822538270874005862376875858705828453753386261288911274383094074592519252497575684057759481069842769293789839160413281937264708649079892";
-    char test_data [] = ".lj]u^\"]+{(!\z\"i!;{!s\"w@=uganmii^^n]+q_iq$h&p=y*(v.<@j|#{x+wj:.{`n<hmhpxu@@@j|-$j=qto]:a+_+/fgb@[qdcdmop-_tt<,,:kl\"~q/>?&ck_yjaq/j~;b!$;r^ytq^,\"[k?\_~$.{/<|<n-\g:.b]!$zy|(waqc_ku-/z,^zv-<!]->=h=~bzo])'?rorc'y|\\dt.;>~-!ut`$g.>^{o{!|qhk/u#`:b(vv\"?d.&te@@(.>";
-    
-    Serial.print("test ke 2 : ");
-    Serial.println(test_data[1]);
+    //char test_data [] = ".lj]u^\"]+{(!\z\"i!;{!s\"w@=uganmii^^n]+q_iq$h&p=y*(v.<@j|#{x+wj:.{`n<hmhpxu@@@j|-$j=qto]:a+_+/fgb@[qdcdmop-_tt<,,:kl\"~q/>?&ck_yjaq/j~;b!$;r^ytq^,\"[k?\_~$.{/<|<n-\g:.b]!$zy|(waqc_ku-/z,^zv-<!]->=h=~bzo])'?rorc'y|\\dt.;>~-!ut`$g.>^{o{!|qhk/u#`:b(vv\"?d.&te@@(.>";
+    //char test_data [] = "wcwdyycn5bbmhrq5hm3n3dz3qtt6jsjfx23k46s2qdkeueqfw6g9ekzxgxfdag9stme66t7rehdmc8edaver86m6jhzg8uasbzk2";
+
+    //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
     Serial.print("Panjang data: ");
@@ -268,22 +269,19 @@ int main(int argc, char **argv)
       readings[i] =  test_data[i] - '0';
     }
   
-    Serial.print(F("*** Reading data: "));
-    for(int i = 0; i < length_data; i++){
-      Serial.print(readings[i]);
-      Serial.print(", ");
-    }Serial.println();
+//    Serial.print(F("*** Reading data: "));
+//    for(int i = 0; i < length_data; i++){
+//      Serial.print(readings[i]);
+//      Serial.print(", ");
+//    }Serial.println();
     Serial.print("Standard Deviation: ");
     stdeviasi = stats.stdev(readings,length_data);
     Serial.println(stdeviasi);
     
     cfg_info cfg;
     cfg.log_lvl = 2;
-    cfg.window_sz2 = 7;
-    cfg.lookahead_sz2 = 4;
       
-//    if(stdeviasi > 2)
-//    {
+//    if(stdeviasi > 2){
 //      cfg.window_sz2 = 7;
 //      cfg.lookahead_sz2 = 4;
 //    }else if(stdeviasi > 1 && stdeviasi < 2){
@@ -293,6 +291,19 @@ int main(int argc, char **argv)
 //      cfg.window_sz2 = 4;
 //      cfg.lookahead_sz2 = 3;
 //    }
+    if(length_data <= 248){
+      cfg.window_sz2 = 8;
+      cfg.lookahead_sz2 = 4;
+    }else if(length_data > 248 && length_data <= 517){
+      cfg.window_sz2 = 6;
+      cfg.lookahead_sz2 = 3;
+    }else if(length_data > 517 && length_data <= 561){
+      cfg.window_sz2 = 5;
+      cfg.lookahead_sz2 = 3;
+    }else if(length_data > 561 && length_data <= 584){
+      cfg.window_sz2 = 4;
+      cfg.lookahead_sz2 = 3;
+    }
     cfg.decoder_input_buffer_size = 64;
     
     compress_and_expand_and_check(test_data, length_data, &cfg);
