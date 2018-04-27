@@ -104,10 +104,21 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
 //    }Serial.println();
 //  
 //    Serial.print("Compressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(comp[i]);
-      Serial.print(" ");
-    }Serial.println();
+    int sending;
+    sending = polled / 62;
+    for(int i = 0; i < sending; i++){
+        for(int j = 0; j < 63; i++){
+          Serial.println(comp[i]);
+        }
+    }
+//    for(int i = 0; i < 63; i++){
+//      Serial.println(comp[i]);
+//    }
+//    delay(5000);
+//    for(int i = 63; i < polled; i++){
+//      Serial.println(comp[i]);
+//    }
+    //Serial.println();
     
     size_t compressed_size = polled;
     sunk = 0;
@@ -221,8 +232,8 @@ int main(int argc, char **argv)
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
-    Serial.print("Panjang data: ");
-    Serial.println(length_data);
+//    Serial.print("Panjang data: ");
+//    Serial.println(length_data);
 
     if(length_data > 584){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
@@ -231,10 +242,10 @@ int main(int argc, char **argv)
     }
 
     //print raw data
-    for(int counter = 0; counter < length_data; counter++){
-      Serial.print(test_data[counter]);
-    }
-    Serial.println();
+//    for(int counter = 0; counter < length_data; counter++){
+//      Serial.print(test_data[counter]);
+//    }
+//    Serial.println();
     
     //convert char to float
     for(int i=0; i<length_data; i++){
@@ -246,23 +257,14 @@ int main(int argc, char **argv)
 //      Serial.print(readings[i]);
 //      Serial.print(", ");
 //    }Serial.println();
-    Serial.print("Standard Deviation: ");
+
+//    Serial.print("Standard Deviation: ");
     stdeviasi = stats.stdev(readings,length_data);
-    Serial.println(stdeviasi);
+//    Serial.println(stdeviasi);
     
     cfg_info cfg;
-    cfg.log_lvl = 1;
+    cfg.log_lvl = 0;
       
-//    if(stdeviasi > 2){
-//      cfg.window_sz2 = 7;
-//      cfg.lookahead_sz2 = 4;
-//    }else if(stdeviasi > 1 && stdeviasi < 2){
-//      cfg.window_sz2 = 6;
-//      cfg.lookahead_sz2 = 3;
-//    }else{
-//      cfg.window_sz2 = 4;
-//      cfg.lookahead_sz2 = 3;
-//    }
     if(length_data <= 248){
       cfg.window_sz2 = 8;
       cfg.lookahead_sz2 = 4;
@@ -277,18 +279,17 @@ int main(int argc, char **argv)
       cfg.lookahead_sz2 = 3;
     }
     cfg.decoder_input_buffer_size = 64;
-    
     compress_and_expand_and_check(test_data, length_data, &cfg);
 
-    Serial.println();
-    Serial.print("Window size: ");
-    Serial.println(cfg.window_sz2);
-    Serial.print("Lookahead size: ");
-    Serial.println(cfg.lookahead_sz2);
+//    Serial.println();
+//    Serial.print("Window size: ");
+//    Serial.println(cfg.window_sz2);
+//    Serial.print("Lookahead size: ");
+//    Serial.println(cfg.lookahead_sz2);
     
     for ( ;; ){
-      Serial.println("B");
-      delay(7000);
+      //Serial.println("B");
+      //delay(5000);
     }
         
 }
