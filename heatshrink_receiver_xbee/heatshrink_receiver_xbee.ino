@@ -24,9 +24,10 @@ int main(int argc, char **argv)
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
     uint8_t read_data;
-    uint8_t data_compression[70000];
-    int i;
-    uint16_t length_data = 0;
+    uint8_t data_compression[30000];
+   // uint8_t data_compression = (uint8_t)malloc(20000);
+    uint32_t i;
+    //memset(data_compression, 0, 10000);
     Serial.println("Incoming data :");
     i = 0;
     for ( ;; ){
@@ -35,20 +36,16 @@ int main(int argc, char **argv)
         i++;
         //Serial.write(Serial.read());
       }
-      if(Serial.available() <= 0){
-        //Serial.write("length_data");
-        Serial.print(i);
-        Serial.write("t");
-       // Serial.write(data_compression[2]);
-        //Serial.write(data_compression[516]);
-        
-        for(int j=0; j<i; j++){
-          Serial.write(data_compression[j]);
+      else if(Serial.available() <= 0){
+        if(i < 504){
+          Serial.print("length=");
+          Serial.println(i);
+          
+          for(int j=0; j<i; j++){
+            Serial.write(data_compression[j]);
+          }Serial.println("");
         }
-//        length_data = sizeof(data_compression)/sizeof(data_compression[0]);
-//        Serial.write("i = ");
-//        Serial.write(length_data);
-        delay(7000);
+        delay(1000);
       }
     }
 }
