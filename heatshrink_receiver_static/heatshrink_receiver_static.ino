@@ -185,7 +185,12 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
         //Serial.print(comp[i]);
         Serial.print(comp[i]);
         Serial.print(", ");
+        //Serial.print(i);
+        //Serial.print("\n");
       }Serial.println();
+      Serial.print("len : ");
+      Serial.println(sizeof(comp)/sizeof(comp[0]));
+      Serial.println((int)sizeof(*comp));
     }
 
     cfg_info cfg2;
@@ -193,7 +198,13 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     cfg2.window_sz2 = 8;
     cfg2.lookahead_sz2 = 4;
     cfg2.decoder_input_buffer_size = 64;
-    
+
+    Serial.print("input size : ");
+    Serial.println(input_size);
+    Serial.print("polled : ");
+    Serial.println(polled);
+    Serial.print("count : ");
+    Serial.println(count);
     decompress_and_expand_and_check(comp, input, input_size, &cfg2, polled, count);
     
     free(comp);
@@ -228,6 +239,27 @@ int main(int argc, char **argv)
       delay(4000);
       return 0;
     }
+
+    size_t data_sz = 100 + (100/2) + 4;
+
+    uint8_t *data_testing = (uint8_t*)malloc(data_sz);
+    if (data_testing == NULL) 
+      Serial.println(F("FAIL: Malloc fail!"));
+    memset(data_testing, 0, data_sz);
+    //Serial.print(data_testing[0]);
+
+    uint8_t *names[] = {
+      "152", "128", "60", "1", "224", "15", "0", "120", "3", "192", "30", "0", "32"
+    };
+
+    for(int i = 0; i < 13; i++){
+      Serial.print((char*)names[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+    Serial.print("length name : ");
+    Serial.println(sizeof(names)/sizeof(names[0]));
+    Serial.println((int)sizeof(*names));
     
     cfg_info cfg;
     cfg.log_lvl = 2;
@@ -247,6 +279,7 @@ int main(int argc, char **argv)
     }
     cfg.decoder_input_buffer_size = 64;
     compress_and_expand_and_check(test_data, length_data, &cfg);
+    //decompress_and_expand_and_check(comp, input, input_size, &cfg2, polled, count);
 
     Serial.println();
     Serial.print("Window size: ");
