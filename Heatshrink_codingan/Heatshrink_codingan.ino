@@ -8,8 +8,6 @@
 #include <heatshrink_config.h>
 #include <heatshrink_decoder.h>
 #include <heatshrink_encoder.h>
-//#include "heatshrink_encoder.h"
-//#include "heatshrink_decoder.h"
 
 #define arduinoLED 13   // Arduino LED on board
 
@@ -212,7 +210,7 @@ void setup() {
 
   //80 data heterogen
   //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f'};
-  const uint8_t test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
+  char test_data[] = {'1', '2', '3', '1', '2', '0', '3', '4', '5', '1', '1', '2', '3', '9', '0', '1', '1', '0', '0', '0', '3', '1', '1', '2', '3', '3', '1', '1', '2', '2', '3', '4', '5', '2', '2', '3', '4', '5', '1', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7', '8', '3', '4', '2', '3', '2', '8', '0', '3', '4', '5', '2', '1', '4', '5', '2', '2', '3', '4', '5', '0', '2', '2', '0', '0', '2', '7', '8', '7', '7', '7'};
 
   //100 data heterogen
   //const uint8_t test_data[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 't', 'u', 'q', 'q', 'q', 'e', 'e', 'e', 'c', 'c', 'e', 'c', 'd', 'e', 'd', 'a', 'd', 'h', 's', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'b', 'b', 'c', 'd', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'r', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'a', 'a', 'a', 'w', 'e', 'e', 'r', 'g', 'h', 'a', 'a'};
@@ -229,17 +227,17 @@ void setup() {
   uint32_t t1 = micros();
   compress(orig_buffer,orig_size,comp_buffer,comp_size);
   uint32_t t2 = micros();
-  //decompress(comp_buffer,comp_size,decomp_buffer,decomp_size);
+  decompress(comp_buffer,comp_size,decomp_buffer,decomp_size);
   uint32_t t3 = micros();
   Serial.print("Size of orginal data: ");Serial.println(orig_size);
   Serial.print("Size of compressed data: ");Serial.println(comp_size);
 
-  Serial.println();
-  Serial.print("Test data: ");
-  for(i = 0; i < 62; i++){
-    Serial.print(test_data[i]);
-    Serial.print(", ");
-  }Serial.println();
+//  Serial.println();
+//  Serial.print("Test data: ");
+//  for(i = 0; i < 62; i++){
+//    Serial.print(test_data[i]);
+//    Serial.print(", ");
+//  }Serial.println();
   
   Serial.println();
   Serial.print("Origin data: ");
@@ -254,11 +252,11 @@ void setup() {
     Serial.print(", ");
   }Serial.println();
 
-//  Serial.print("Decompressed data: ");
-//  for(i = 0; i < decomp_size; i++){
-//    Serial.print(decomp_buffer[i]);
-//    Serial.print(", ");
-//  }Serial.println();Serial.println();
+  Serial.print("Decompressed data: ");
+  for(i = 0; i < decomp_size; i++){
+    Serial.print(decomp_buffer[i]);
+    Serial.print(", ");
+  }Serial.println();Serial.println();
   
   float comp_ratio = ((float) orig_size / comp_size);
   Serial.print("Compression ratio: ");Serial.println(comp_ratio);

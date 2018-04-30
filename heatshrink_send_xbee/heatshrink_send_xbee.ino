@@ -95,6 +95,12 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       Serial.print(polled);
       Serial.print(F(" \n")); 
 
+//      Serial.print("Origin data: ");
+//      for(int i = 0; i < input_size; i++){
+//        //Serial.print(input[i]);
+//        Serial.print((char)&input[i]);
+//        Serial.print(", ");
+//      }Serial.println();
       Serial.print("Origin data: ");
       for(int i = 0; i < input_size; i++){
         Serial.print(input[i]);
@@ -102,6 +108,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       }Serial.println();
       Serial.print("Compressed data: ");
       for(int i = 0; i < polled; i++){
+        //Serial.print(comp[i]);
         Serial.print(comp[i]);
         Serial.print(", ");
       }Serial.println();
@@ -113,13 +120,22 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
 //          Serial.print(F(" ")); 
 //       }Serial.println();
 
-       for(int i = 1; i <= polled; i++){
-        if(i % 13 == 0){
-          Serial.println(comp[i]);
-          delay(2000);
-        }else{
-          Serial.println(comp[i-1]);
-        }
+        for(int i = 1; i <= polled; i++){
+//        if(i == 28){
+//          delay(60000);
+//        }
+//        if(i % 13 == 0){
+//          Serial.println(comp[i]);
+//          delay(3000);
+//        }else{
+//          Serial.println(comp[i-1]);
+//          //delay(3000);
+//          //Serial.print(comp[i-1]);
+//        }
+          //Serial.print((char)&comp[i-1]);
+          Serial.print(comp[i-1]);
+          Serial.print("\n");
+          delay(1000);
       }
     }
     
@@ -213,11 +229,12 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
 
     //tambahan
-//    Serial.print("Origin data: ");
-//    for(int i = 0; i < polled; i++){
-//      Serial.print(decomp[i]);
-//      Serial.print(", ");
-//    }Serial.println();
+    Serial.print("Decompress data: ");
+    for(int i = 0; i < polled; i++){
+      Serial.print(decomp[i]);
+//      Serial.print((char)&decomp[i]);
+      Serial.print(", ");
+    }Serial.println();
   
     free(comp);
     free(decomp);
@@ -254,13 +271,12 @@ int main(int argc, char **argv)
     //uint8_t test_data [] = "9522186260603957281653815791006807810117480113809012982259839961971697042715029456965105163209229165350812842927165990893822538270874005862376875858705828453753386261288911274383094074592519252497575684057759481069842769293789839160413281937264708649079892";
     //char test_data [] = ".lj]u^\"]+{(!\z\"i!;{!s\"w@=uganmii^^n]+q_iq$h&p=y*(v.<@j|#{x+wj:.{`n<hmhpxu@@@j|-$j=qto]:a+_+/fgb@[qdcdmop-_tt<,,:kl\"~q/>?&ck_yjaq/j~;b!$;r^ytq^,\"[k?\_~$.{/<|<n-\g:.b]!$zy|(waqc_ku-/z,^zv-<!]->=h=~bzo])'?rorc'y|\\dt.;>~-!ut`$g.>^{o{!|qhk/u#`:b(vv\"?d.&te@@(.>";
     //char test_data [] = "wcwdyycn5bbmhrq5hm3n3dz3qtt6jsjfx23k46s2qdkeueqfw6g9ekzxgxfdag9stme66t7rehdmc8edaver86m6jhzg8uasbzk2";
-
-    char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
+    
+    const uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+    //char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
-//    Serial.print("Panjang data: ");
-//    Serial.println(length_data);
 
     if(length_data > 584){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
@@ -290,7 +306,7 @@ int main(int argc, char **argv)
 //    Serial.println(stdeviasi);
     
     cfg_info cfg;
-    cfg.log_lvl = 0;
+    cfg.log_lvl = 2;
       
     if(length_data <= 248){
       cfg.window_sz2 = 8;
@@ -308,11 +324,11 @@ int main(int argc, char **argv)
     cfg.decoder_input_buffer_size = 64;
     compress_and_expand_and_check(test_data, length_data, &cfg);
 
-//    Serial.println();
-//    Serial.print("Window size: ");
-//    Serial.println(cfg.window_sz2);
-//    Serial.print("Lookahead size: ");
-//    Serial.println(cfg.lookahead_sz2);
+    Serial.println();
+    Serial.print("Window size: ");
+    Serial.println(cfg.window_sz2);
+    Serial.print("Lookahead size: ");
+    Serial.println(cfg.lookahead_sz2);
     
     for ( ;; ){
       //Serial.println("B");
