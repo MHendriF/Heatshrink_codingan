@@ -250,13 +250,15 @@ void setup() {
   for(i = 0; i < comp_size; i++){
     Serial.print(comp_buffer[i]);
     Serial.print(", ");
-  }Serial.println();
+  }
+  Serial.println("Compressed length: ");
+  Serial.println(sizeof(comp_buffer));
 
   Serial.print("Decompressed data: ");
   for(i = 0; i < decomp_size; i++){
     Serial.print(decomp_buffer[i]);
     Serial.print(", ");
-  }Serial.println();Serial.println();
+  }Serial.println();
   
   float comp_ratio = ((float) orig_size / comp_size);
   Serial.print("Compression ratio: ");Serial.println(comp_ratio);
