@@ -346,7 +346,32 @@ int main(int argc, char **argv)
       delay(4000);
       return 0;
     }
-    
+
+    //////////////////////////////////////////////////////////////
+    int x = 123;
+    uint8_t y = (uint8_t) x;
+    Serial.print("nilai y : ");
+    Serial.println(y);
+
+    int orig_angka[] = {
+      152, 128, 60, 1, 224, 15, 0, 120, 3, 192, 30, 0, 32
+    };
+    int length_angka = sizeof(orig_angka)/sizeof(orig_angka[0]);
+
+    uint8_t orig_char[100];
+    for(int i = 0; i < length_angka; i++){
+      orig_char[i] = (uint8_t) orig_angka[i];
+    }
+    for(int i = 0; i < length_angka; i++){
+      Serial.print(orig_angka[i]);
+      Serial.print(" ");
+    }Serial.print("\n");
+    for(int i = 0; i < length_angka; i++){
+      Serial.print(orig_char[i]);
+      Serial.print(" ");
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
     uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
     memcpy(orig_buffer, test_data, length_data);
@@ -372,7 +397,8 @@ int main(int argc, char **argv)
     cfg.decoder_input_buffer_size = 64;
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
     //Serial.print(polled);
-    decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    //decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
     Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
     
