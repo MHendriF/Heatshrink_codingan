@@ -124,7 +124,8 @@ static void decompress_and_expand_and_check(uint8_t *input,
                                            uint32_t input_size, 
                                            cfg_info *cfg, 
                                            uint8_t *output,
-                                           uint32_t &output_size) {
+                                           uint32_t &output_size,
+                                           size_t polled2) {
 
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg->decoder_input_buffer_size,
         cfg->window_sz2, cfg->lookahead_sz2);
@@ -135,7 +136,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
 //      Serial.println(F("FAIL: Malloc fail!"));
 //    memset(decomp, 0, decomp_sz);
 
-    //size_t compressed_size = polled2;
+    size_t compressed_size = polled2;
     size_t count  = 0;
     size_t sunk = 0;
     size_t polled = 0;
@@ -144,15 +145,15 @@ static void decompress_and_expand_and_check(uint8_t *input,
         Serial.print(F("\n^^ DECOMPRESSING\n"));
         dump_buf("comp", input, input_size);
     }
-    while (sunk < input_size) {
-        heatshrink_decoder_sink(hsd, &input[sunk], input_size - sunk, &count);
+    while (sunk < compressed_size) {
+        heatshrink_decoder_sink(hsd, &input[sunk], compressed_size - sunk, &count);
         sunk += count;
         if (cfg->log_lvl > 1){
           Serial.print(F("^^ sunk "));
           Serial.print(count);
           Serial.print(F("\n"));
         }
-        if (sunk == input_size) {
+        if (sunk == compressed_size) {
             heatshrink_decoder_finish(hsd);
         }
 
@@ -167,7 +168,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
               Serial.print(F("\n"));
             }
         } while (pres == HSDR_POLL_MORE);
-        if (sunk == input_size) {
+        if (sunk == compressed_size) {
             HSD_finish_res fres = heatshrink_decoder_finish(hsd);
         }
 
@@ -182,12 +183,18 @@ static void decompress_and_expand_and_check(uint8_t *input,
     }
     if (cfg->log_lvl > 0){
         Serial.print(F("in: "));
-        Serial.print(input_size);
+        Serial.print(compressed_size);
         Serial.print(F(" decompressed: "));
         Serial.print(polled);
         Serial.print(F(" \n")); 
     }
     if (polled != input_size) {
+        Serial.print(F("polled: "));
+        Serial.print(polled);
+        Serial.print(F(" \n")); 
+        Serial.print(F("input size: "));
+        Serial.print(input_size);
+        Serial.print(F(" \n")); 
         Serial.print(F("FAIL: Decompressed length does not match original input length!"));
     }
 
@@ -202,11 +209,11 @@ static void decompress_and_expand_and_check(uint8_t *input,
 //    }
 
     //tambahan
-//    Serial.print("Decompressed data: ");
-//    for(int i = 0; i < polled; i++){
-//      Serial.print(decomp[i]);
-//      Serial.print(", ");
-//    }Serial.println();
+    Serial.print("Decompressed data: ");
+    for(int i = 0; i < polled; i++){
+      Serial.print(output[i]);
+      Serial.print(", ");
+    }Serial.println();
 //  
 //    free(decomp);
 //    heatshrink_decoder_free(hsd);
@@ -282,17 +289,15 @@ static int compress_and_expand_and_check(uint8_t *input,
         Serial.print(input[i]);
         Serial.print(", ");
       }Serial.println();
-//      Serial.print("Compressed data: ");
-//      for(int i = 0; i < polled; i++){
-//        //Serial.print(comp[i]);
-//        Serial.print(comp[i]);
-//        Serial.print(", ");
-//        //Serial.print(i);
-//        //Serial.print("\n");
-//      }Serial.println();
-//      Serial.print("ukuran uint8_t : ");
-//      Serial.println(sizeof(comp));
-//      Serial.println((int)sizeof(*comp));
+      Serial.print("Compressed data: ");
+      for(int i = 0; i < polled; i++){
+        Serial.print(output[i]);
+        Serial.print(", ");
+      }Serial.println();
+      
+      //Serial.print("ukuran uint8_t : ");
+      //Serial.println(sizeof(output));
+      //Serial.println((int)sizeof(*output));
     }
 
 //    cfg_info cfg2;
@@ -300,17 +305,11 @@ static int compress_and_expand_and_check(uint8_t *input,
 //    cfg2.window_sz2 = 8;
 //    cfg2.lookahead_sz2 = 4;
 //    cfg2.decoder_input_buffer_size = 64;
-//
-//    Serial.print("input size : ");
-//    Serial.println(input_size);
-//    Serial.print("polled : ");
-//    Serial.println(polled);
-//    Serial.print("count : ");
-//    Serial.println(count);
-//    decompress_and_expand_and_check(comp, input, input_size, &cfg2, polled, count);
     
 //    free(comp);
 //    heatshrink_encoder_free(hse);
+
+    return polled;
 }
 
 
@@ -352,6 +351,7 @@ int main(int argc, char **argv)
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
     memcpy(orig_buffer, test_data, length_data);
    
+    size_t polled = 0;
     
     cfg_info cfg;
     cfg.log_lvl = 2;
@@ -370,19 +370,19 @@ int main(int argc, char **argv)
       cfg.lookahead_sz2 = 3;
     }
     cfg.decoder_input_buffer_size = 64;
-    compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
-    decompress_and_expand_and_check(comp_buffer, comp_size, &cfg, decomp_buffer, decomp_size);
+    polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
+    //Serial.print(polled);
+    decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
+
+    Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
     
     Serial.print("Compressed data: ");
-    for(int i = 0; i < comp_size; i++){
+    for(int i = 0; i < polled; i++){
       Serial.print(comp_buffer[i]);
       Serial.print(", ");
-    }
-    Serial.print("Compressed length: ");
-    Serial.println(sizeof(comp_buffer));
-
+    }Serial.println();
     Serial.print("Decompressed data: ");
-    for(int i = 0; i < decomp_size; i++){
+    for(int i = 0; i < length_data; i++){
       Serial.print(decomp_buffer[i]);
       Serial.print(", ");
     }Serial.println();
