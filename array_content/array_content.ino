@@ -1,18 +1,39 @@
 // n is an array of 10 integers
-int n[10] = { 32, 27, 64, 18, 95, 14, 90, 70, 60, 37 };
+#include <stdint.h>
+#include <ctype.h>
+#include <Arduino.h>
+#include <String.h>
 
-void setup () {
+void removeChar( char * string, char letter );
 
+int main(int argc, char **argv)
+{
+    init(); // this is needed  
+    Serial.begin(9600);
+    Serial.println("Incoming data :");
+    String stringOne = "a1000a";
+    char stringTwo [10];
+    stringOne.toCharArray(stringTwo, 10);
+    Serial.println(stringTwo);
+    removeChar(stringTwo, 'a' );
+    Serial.println(stringTwo);
+
+    if (allCharactersSame(s){
+      
+    }
+    else{
+      
+    }
+       
+    for ( ;; )
+    {
+        Serial.println("B");
+        delay(5000); 
+    }
 }
 
-void loop () 
-{
-//   for (int i = 0; i < 10; ++i){ // initialize elements of array n to 0 {
-//      Serial.print (i);
-//      Serial.print ("\r");
-//   }
-   for (int j = 0; j < 10; ++j){ // output each array element's value {
-      Serial.print(n[j]);
-      Serial.print("\r");
-   } 
+void removeChar(char * string, char letter ) {
+  for( unsigned int i = 0; i < strlen( string ); i++ )
+    if( string[i] == letter )
+      strcpy( string + i, string + i + 1 );
 }

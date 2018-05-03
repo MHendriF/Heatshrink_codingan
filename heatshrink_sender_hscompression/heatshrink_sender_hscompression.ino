@@ -33,93 +33,6 @@ static void dump_buf(char *name, uint8_t *buf, uint16_t count) {
     }
 }
 
-static void decompress_and_expand_and_check2(uint8_t *comp, uint32_t input_size, cfg_info *cfg2, size_t polled2, size_t count) {
-
-    heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg2->decoder_input_buffer_size,
-        cfg2->window_sz2, cfg2->lookahead_sz2);
-    size_t decomp_sz = input_size + (input_size/2) + 4;
-
-    uint8_t *decomp = (uint8_t*)malloc(decomp_sz);
-    if (decomp == NULL) 
-      Serial.println(F("FAIL: Malloc fail!"));
-    memset(decomp, 0, decomp_sz);
-
-    size_t compressed_size = polled2;
-    size_t sunk = 0;
-    size_t polled = 0;
-    
-    if (cfg2->log_lvl > 1) {
-        Serial.print(F("\n^^ DECOMPRESSING\n"));
-        dump_buf("comp", *comp, compressed_size);
-    }
-    while (sunk < compressed_size) {
-        heatshrink_decoder_sink(hsd, *&comp[sunk], compressed_size - sunk, &count);
-        sunk += count;
-        if (cfg2->log_lvl > 1){
-          Serial.print(F("^^ sunk "));
-          Serial.print(count);
-          Serial.print(F("\n"));
-        }
-        if (sunk == compressed_size) {
-            heatshrink_decoder_finish(hsd);
-        }
-
-        HSD_poll_res pres;
-        do {
-            pres = heatshrink_decoder_poll(hsd, *&decomp[polled],
-                decomp_sz - polled, &count);
-            polled += count;
-            if (cfg2->log_lvl > 1){
-              Serial.print(F("^^ polled "));
-              Serial.print(count);
-              Serial.print(F("\n"));
-            }
-        } while (pres == HSDR_POLL_MORE);
-        if (sunk == compressed_size) {
-            HSD_finish_res fres = heatshrink_decoder_finish(hsd);
-        }
-
-        if (polled > input_size) {
-            Serial.print(F("nExpected "));
-            Serial.print((size_t)input_size);
-            Serial.print(F(" got: "));
-            Serial.print(polled);
-            Serial.print(F(" \n")); 
-            Serial.print(F("FAIL: Decompressed data is larger than original input!"));
-        }
-    }
-    if (cfg2->log_lvl > 0){
-        Serial.print(F("in: "));
-        Serial.print(compressed_size);
-        Serial.print(F(" decompressed: "));
-        Serial.print(polled);
-        Serial.print(F(" \n")); 
-    }
-    if (polled != input_size) {
-        Serial.print(F("FAIL: Decompressed length does not match original input length!"));
-    }
-
-    if (cfg2->log_lvl > 1) dump_buf("decomp", decomp, polled);
-//    for (uint32_t i=0; i<input_size; i++) {
-//        if (input[i] != decomp[i]) {
-//           // printf("*** mismatch at %d\n", i);
-//            Serial.print(F("*** mismatch at: "));
-//            Serial.print(i);
-//            Serial.print(F(" \n"));
-//        }
-//    }
-
-    //tambahan
-    Serial.print("Decompressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(decomp[i]);
-      Serial.print(", ");
-    }Serial.println();
-  
-    free(decomp);
-    heatshrink_decoder_free(hsd);
-}
-
 static void decompress_and_expand_and_check(uint8_t *input, 
                                            uint32_t input_size, 
                                            cfg_info *cfg, 
@@ -293,11 +206,8 @@ static int compress_and_expand_and_check(uint8_t *input,
         }
       }
     }
-
     return polled;
 }
-
-
 
 
 /******************************************************************************/
@@ -315,11 +225,11 @@ int main(int argc, char **argv)
     pinMode(arduinoLED, OUTPUT);      // Configure the onboard LED for output
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
-    //delay(5000);
+    delay(1000);
     int length_data;
     float readings[1000], stdeviasi;
    
-    char test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+    uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
     //char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     
@@ -371,10 +281,10 @@ int main(int argc, char **argv)
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
     //Serial.print(polled);
     //decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
-    decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
-    Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
-    Serial.println("Compressed data: ");
+    //Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
+    //Serial.println("Compressed data: ");
     Serial.print(comp_buffer[0]);
     Serial.print("\n");
     for(int i = 1; i < polled; i++){
@@ -388,31 +298,21 @@ int main(int argc, char **argv)
         }
     }
     //lenght data original
-    Serial.print("^");
-    Serial.print(length_data);
-
-    //config
-    Serial.print("!");
-    Serial.print(cfg.window_sz2);
-    Serial.print("@");
-    Serial.print(cfg.lookahead_sz2);
-    Serial.print("#");
-    Serial.print(cfg.decoder_input_buffer_size);
-
-    //Polled
-    Serial.print("$");
-    Serial.print(polled);
-    
-//    Serial.print("Compressed data: ");
-//    for(int i = 0; i < polled; i++){
-//      Serial.print(comp_buffer[i]);
-//      Serial.print(", ");
-//    }Serial.println();
-//    Serial.print("Decompressed data: ");
-//    for(int i = 0; i < length_data; i++){
-//      Serial.print(decomp_buffer[i]);
-//      Serial.print(", ");
-//    }Serial.println();
+//    Serial.print("^");
+//    Serial.print(length_data);
+//
+//    //config
+//    Serial.print("!");
+//    Serial.print(cfg.window_sz2);
+//    Serial.print("@");
+//    Serial.print(cfg.lookahead_sz2);
+//    Serial.print("#");
+//    Serial.print(cfg.decoder_input_buffer_size);
+//
+//    //Polled
+//    Serial.print("$");
+//    Serial.print(polled);
+   
     
     for ( ;; ){
       //Serial.println("B");

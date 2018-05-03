@@ -33,93 +33,6 @@ static void dump_buf(char *name, uint8_t *buf, uint16_t count) {
     }
 }
 
-static void decompress_and_expand_and_check2(uint8_t *comp, uint32_t input_size, cfg_info *cfg2, size_t polled2, size_t count) {
-
-    heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg2->decoder_input_buffer_size,
-        cfg2->window_sz2, cfg2->lookahead_sz2);
-    size_t decomp_sz = input_size + (input_size/2) + 4;
-
-    uint8_t *decomp = (uint8_t*)malloc(decomp_sz);
-    if (decomp == NULL) 
-      Serial.println(F("FAIL: Malloc fail!"));
-    memset(decomp, 0, decomp_sz);
-
-    size_t compressed_size = polled2;
-    size_t sunk = 0;
-    size_t polled = 0;
-    
-    if (cfg2->log_lvl > 1) {
-        Serial.print(F("\n^^ DECOMPRESSING\n"));
-        dump_buf("comp", *comp, compressed_size);
-    }
-    while (sunk < compressed_size) {
-        heatshrink_decoder_sink(hsd, *&comp[sunk], compressed_size - sunk, &count);
-        sunk += count;
-        if (cfg2->log_lvl > 1){
-          Serial.print(F("^^ sunk "));
-          Serial.print(count);
-          Serial.print(F("\n"));
-        }
-        if (sunk == compressed_size) {
-            heatshrink_decoder_finish(hsd);
-        }
-
-        HSD_poll_res pres;
-        do {
-            pres = heatshrink_decoder_poll(hsd, *&decomp[polled],
-                decomp_sz - polled, &count);
-            polled += count;
-            if (cfg2->log_lvl > 1){
-              Serial.print(F("^^ polled "));
-              Serial.print(count);
-              Serial.print(F("\n"));
-            }
-        } while (pres == HSDR_POLL_MORE);
-        if (sunk == compressed_size) {
-            HSD_finish_res fres = heatshrink_decoder_finish(hsd);
-        }
-
-        if (polled > input_size) {
-            Serial.print(F("nExpected "));
-            Serial.print((size_t)input_size);
-            Serial.print(F(" got: "));
-            Serial.print(polled);
-            Serial.print(F(" \n")); 
-            Serial.print(F("FAIL: Decompressed data is larger than original input!"));
-        }
-    }
-    if (cfg2->log_lvl > 0){
-        Serial.print(F("in: "));
-        Serial.print(compressed_size);
-        Serial.print(F(" decompressed: "));
-        Serial.print(polled);
-        Serial.print(F(" \n")); 
-    }
-    if (polled != input_size) {
-        Serial.print(F("FAIL: Decompressed length does not match original input length!"));
-    }
-
-    if (cfg2->log_lvl > 1) dump_buf("decomp", decomp, polled);
-//    for (uint32_t i=0; i<input_size; i++) {
-//        if (input[i] != decomp[i]) {
-//           // printf("*** mismatch at %d\n", i);
-//            Serial.print(F("*** mismatch at: "));
-//            Serial.print(i);
-//            Serial.print(F(" \n"));
-//        }
-//    }
-
-    //tambahan
-    Serial.print("Decompressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(decomp[i]);
-      Serial.print(", ");
-    }Serial.println();
-  
-    free(decomp);
-    heatshrink_decoder_free(hsd);
-}
-
 static void decompress_and_expand_and_check(uint8_t *input, 
                                            uint32_t input_size, 
                                            cfg_info *cfg, 
@@ -129,12 +42,6 @@ static void decompress_and_expand_and_check(uint8_t *input,
 
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg->decoder_input_buffer_size,
         cfg->window_sz2, cfg->lookahead_sz2);
-//    size_t decomp_sz = input_size + (input_size/2) + 4;
-//
-//    uint8_t *decomp = (uint8_t*)malloc(decomp_sz);
-//    if (decomp == NULL) 
-//      Serial.println(F("FAIL: Malloc fail!"));
-//    memset(decomp, 0, decomp_sz);
 
     size_t compressed_size = polled2;
     size_t count  = 0;
@@ -281,19 +188,7 @@ static int compress_and_expand_and_check(uint8_t *input,
       Serial.print(input_size);
       Serial.print(F(" compressed: "));
       Serial.print(polled);
-      Serial.print(F(" \n")); 
-      
-//      Serial.print("Origin data: ");
-//      for(int i = 0; i < input_size; i++){
-//        Serial.print(input[i]);
-//        Serial.print(", ");
-//      }Serial.println();
-//      Serial.print("Compressed data: ");
-//      for(int i = 0; i < polled; i++){
-//        Serial.print(output[i]);
-//        Serial.print(", ");
-//      }Serial.println();
-      
+      Serial.print(F(" \n"));     
     }
 
     return polled;
@@ -407,7 +302,34 @@ int main(int argc, char **argv)
     Serial.println(cfg.lookahead_sz2);
     
     for ( ;; ){
-      //Serial.println("B");
+        if(Serial.available() > 0){
+        incomingByte = Serial.read();
+        //length_data = sizeof(num)/sizeof(num[0]);
+        if(incomingByte != '\n'){
+            Serial.print(incomingByte);
+            stringOne += incomingByte;
+        }
+        elseif(incomingByte == '^'){
+        
+        }else{
+          //Serial.println(stringOne);
+          Serial.print(" ");
+          num[i] = stringOne.toInt();
+          stringOne = "";
+          i++;
+         }
+      }
+      else if(Serial.available() <= 0){
+        Serial.println("test");
+        //Serial.println(num[0]);
+        if(num[12] != 0){
+          for(j=0; j<13; j++){
+             Serial.println(num[j]);
+             //Serial.println(" ");
+          }
+        }
+        delay(3000);
+      }
       delay(5000);
     }
         
