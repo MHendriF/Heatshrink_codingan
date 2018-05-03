@@ -297,26 +297,34 @@ int main(int argc, char **argv)
           Serial.print("\n");
         }
     }
+    delay(3000);
+    
     //lenght data original
-//    Serial.print("^");
-//    Serial.print(length_data);
-//
-//    //config
-//    Serial.print("!");
-//    Serial.print(cfg.window_sz2);
-//    Serial.print("@");
-//    Serial.print(cfg.lookahead_sz2);
-//    Serial.print("#");
-//    Serial.print(cfg.decoder_input_buffer_size);
-//
-//    //Polled
-//    Serial.print("$");
-//    Serial.print(polled);
+    Serial.print("a");
+    Serial.print(length_data);
+    Serial.print("\n");
+
+    //config
+    Serial.print("b");
+    Serial.print(cfg.window_sz2);
+    Serial.print("\n");
+    Serial.print("c");
+    Serial.print(cfg.lookahead_sz2);
+    Serial.print("\n");
+    Serial.print("d");
+    Serial.print(cfg.decoder_input_buffer_size);
+    Serial.print("\n");
+
+    //Polled
+    Serial.print("f");
+    Serial.print(polled);
+    Serial.print("\n");
    
     
     for ( ;; ){
-      //Serial.println("B");
-      delay(5000);
+      //Serial.print("a100");
+      //Serial.print("\n");
+      delay(3000);
     }
         
 }
