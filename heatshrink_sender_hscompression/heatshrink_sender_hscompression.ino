@@ -226,15 +226,6 @@ static int compress_and_expand_and_check(uint8_t *input,
                                          {
     heatshrink_encoder *hse = heatshrink_encoder_alloc(cfg->window_sz2,
         cfg->lookahead_sz2);
-//    size_t comp_sz = input_size + (input_size/2) + 4;
-//    Serial.print("comp_sz : ");
-//    Serial.println(comp_sz);
-//    
-//    uint8_t *comp = (uint8_t*)malloc(comp_sz);
-//    if (comp == NULL) 
-//      Serial.println(F("FAIL: Malloc fail!"));
-//    memset(comp, 0, comp_sz);
-
     size_t count = 0;
     size_t sunk = 0;
     size_t polled = 0;
@@ -283,17 +274,24 @@ static int compress_and_expand_and_check(uint8_t *input,
       Serial.print(polled);
       Serial.print(F(" \n")); 
       
-//      Serial.print("Origin data: ");
-//      for(int i = 0; i < input_size; i++){
-//        Serial.print(input[i]);
-//        Serial.print(", ");
-//      }Serial.println();
-//      Serial.print("Compressed data: ");
-//      for(int i = 0; i < polled; i++){
-//        Serial.print(output[i]);
-//        Serial.print(", ");
-//      }Serial.println();
-      
+      Serial.print("Compressed data: ");
+      for(int i = 0; i < polled; i++){
+        Serial.print(output[i]);
+        Serial.print(", ");
+      }Serial.println();
+
+      Serial.print(output[0]);
+      Serial.print("\n");
+      for(int i = 1; i < polled; i++){
+        if(i % 13 == 0){
+          Serial.print(output[i]);
+          Serial.print("\n");
+          delay(3000);
+        }else{
+          Serial.print(output[i]);
+          Serial.print("\n");
+        }
+      }
     }
 
     return polled;
@@ -326,20 +324,15 @@ int main(int argc, char **argv)
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
-    Serial.print("length_data : ");
-    Serial.println(length_data);
+//    Serial.print("length_data : ");
+//    Serial.println(length_data);
     if(length_data > 584){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
       delay(4000);
       return 0;
     }
 
-    //////////////////////////////////////////////////////////////
-    int x = 123;
-    uint8_t y = (uint8_t) x;
-    Serial.print("nilai y : ");
-    Serial.println(y);
-
+    /////////////////////////////////////////////////////////////
     int orig_angka[] = {
       152, 128, 60, 1, 224, 15, 0, 120, 3, 192, 30, 0, 32
     };
@@ -349,14 +342,7 @@ int main(int argc, char **argv)
     for(int i = 0; i < length_angka; i++){
       orig_char[i] = (uint8_t) orig_angka[i];
     }
-    for(int i = 0; i < length_angka; i++){
-      Serial.print(orig_angka[i]);
-      Serial.print(" ");
-    }Serial.print("\n");
-    for(int i = 0; i < length_angka; i++){
-      Serial.print(orig_char[i]);
-      Serial.print(" ");
-    }
+
     ////////////////////////////////////////////////////////////////////////////
 
     uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
@@ -366,7 +352,7 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     cfg_info cfg;
-    cfg.log_lvl = 2;
+    cfg.log_lvl = 0;
       
     if(length_data <= 248){
       cfg.window_sz2 = 8;
@@ -388,23 +374,45 @@ int main(int argc, char **argv)
     decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
     Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
+    Serial.println("Compressed data: ");
+    Serial.print(comp_buffer[0]);
+    Serial.print("\n");
+    for(int i = 1; i < polled; i++){
+        if(i % 13 == 0){
+          Serial.print(comp_buffer[i]);
+          Serial.print("\n");
+          delay(3000);
+        }else{
+          Serial.print(comp_buffer[i]);
+          Serial.print("\n");
+        }
+    }
+    //lenght data original
+    Serial.print("^");
+    Serial.print(length_data);
+
+    //config
+    Serial.print("!");
+    Serial.print(cfg.window_sz2);
+    Serial.print("@");
+    Serial.print(cfg.lookahead_sz2);
+    Serial.print("#");
+    Serial.print(cfg.decoder_input_buffer_size);
+
+    //Polled
+    Serial.print("$");
+    Serial.print(polled);
     
-    Serial.print("Compressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(comp_buffer[i]);
-      Serial.print(", ");
-    }Serial.println();
-    Serial.print("Decompressed data: ");
-    for(int i = 0; i < length_data; i++){
-      Serial.print(decomp_buffer[i]);
-      Serial.print(", ");
-    }Serial.println();
-  
-    Serial.println();
-    Serial.print("Window size: ");
-    Serial.println(cfg.window_sz2);
-    Serial.print("Lookahead size: ");
-    Serial.println(cfg.lookahead_sz2);
+//    Serial.print("Compressed data: ");
+//    for(int i = 0; i < polled; i++){
+//      Serial.print(comp_buffer[i]);
+//      Serial.print(", ");
+//    }Serial.println();
+//    Serial.print("Decompressed data: ");
+//    for(int i = 0; i < length_data; i++){
+//      Serial.print(decomp_buffer[i]);
+//      Serial.print(", ");
+//    }Serial.println();
     
     for ( ;; ){
       //Serial.println("B");
