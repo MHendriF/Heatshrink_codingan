@@ -263,7 +263,7 @@ int main(int argc, char **argv)
     
     cfg_info cfg;
     cfg.log_lvl = 0;
-      
+     
     if(length_data <= 248){
       cfg.window_sz2 = 8;
       cfg.lookahead_sz2 = 4;
