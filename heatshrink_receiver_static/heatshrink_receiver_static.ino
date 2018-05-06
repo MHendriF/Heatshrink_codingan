@@ -102,7 +102,6 @@ static int decompress_and_expand_and_check2(uint8_t *comp, uint32_t input_size, 
     if (cfg2->log_lvl > 1) dump_buf("decomp", decomp, polled);
 //    for (uint32_t i=0; i<input_size; i++) {
 //        if (input[i] != decomp[i]) {
-//           // printf("*** mismatch at %d\n", i);
 //            Serial.print(F("*** mismatch at: "));
 //            Serial.print(i);
 //            Serial.print(F(" \n"));

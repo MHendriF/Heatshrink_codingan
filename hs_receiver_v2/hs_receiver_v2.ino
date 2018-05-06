@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <Arduino.h>
-//#include <QuickStats.h>
 #include <String.h>
 
 #include "heatshrink_encoder.h"
@@ -49,6 +48,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
                                            uint32_t &output_size,
                                            size_t polled2) {
 
+    Serial.print(F("\n^^ Processing\n"));
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg->decoder_input_buffer_size,
         cfg->window_sz2, cfg->lookahead_sz2);
 
@@ -115,14 +115,14 @@ static void decompress_and_expand_and_check(uint8_t *input,
     }
 
     if (cfg->log_lvl > 1) dump_buf("decomp", output, output_size);
-//    for (uint32_t i=0; i<input_size; i++) {
-//        if (input[i] != output[i]) {
-//           // printf("*** mismatch at %d\n", i);
-//            Serial.print(F("*** mismatch at: "));
-//            Serial.print(i);
-//            Serial.print(F(" \n"));
-//        }
-//    }
+    for (uint32_t i=0; i<input_size; i++) {
+        if (input[i] != output[i]) {
+           // printf("*** mismatch at %d\n", i);
+            Serial.print(F("*** mismatch at: "));
+            Serial.print(i);
+            Serial.print(F(" \n"));
+        }
+    }
 
     Serial.print("Decompressed data: ");
     for(int i = 0; i < polled; i++){
@@ -130,7 +130,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
       Serial.print(", ");
     }Serial.println();
 
-    delay(7000);
+    delay(2000);
 
 }
 
@@ -169,13 +169,13 @@ int main(int argc, char **argv)
     Serial.println(sizeof(orig_char));
     
     int length_data = 100;
-//    polled = 13;
-//    cfg_info cfg;
-//    cfg.log_lvl = 0;
-//    cfg.window_sz2 = 8;
-//    cfg.lookahead_sz2 = 4;
-//    cfg.decoder_input_buffer_size = 64;
-//    decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    polled = 13;
+    cfg_info cfg;
+    cfg.log_lvl = 0;
+    cfg.window_sz2 = 8;
+    cfg.lookahead_sz2 = 4;
+    cfg.decoder_input_buffer_size = 64;
+    decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     String stringOne;
@@ -269,13 +269,14 @@ int main(int argc, char **argv)
                Serial.print("origin2 : ");
                Serial.println(sizeof(origin_char));
                
-               cfg_info cfg;
-               cfg.log_lvl = 2;
-               cfg.window_sz2 = window;
-               cfg.lookahead_sz2 = lookahead;
-               cfg.decoder_input_buffer_size = decoder;
-               decompress_and_expand_and_check(origin_char, orig, &cfg, decomp_buffer, decomp_size, polled);
+//               cfg_info cfg;
+//               cfg.log_lvl = 2;
+//               cfg.window_sz2 = window;
+//               cfg.lookahead_sz2 = lookahead;
+//               cfg.decoder_input_buffer_size = decoder;
+//               decompress_and_expand_and_check(orig_char, orig, &cfg, decomp_buffer, decomp_size, polled);
 
+               Serial.print(F("\n^^ Selesai\n"));
                //reinisialite
                //orig = 0, window = 0, lookahead = 0, decoder = 0, polled = 0;
                //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);

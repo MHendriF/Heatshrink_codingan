@@ -95,12 +95,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       Serial.print(polled);
       Serial.print(F(" \n")); 
 
-//      Serial.print("Origin data: ");
-//      for(int i = 0; i < input_size; i++){
-//        //Serial.print(input[i]);
-//        Serial.print((char)&input[i]);
-//        Serial.print(", ");
-//      }Serial.println();
       Serial.print("Origin data: ");
       for(int i = 0; i < input_size; i++){
         Serial.print(input[i]);
@@ -108,60 +102,10 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       }Serial.println();
       Serial.print("Compressed data: ");
       for(int i = 0; i < polled; i++){
-        //Serial.print(comp[i]);
         Serial.print(comp[i]);
         Serial.print(", ");
       }Serial.println();
     }
-
-    if (cfg->log_lvl == 0){
-//       for(int i = 0; i < polled; i++){
-//          Serial.print(comp[i]);
-//          Serial.print(F(" ")); 
-//       }Serial.println();
-
-        for(int i = 1; i <= polled; i++){
-//        if(i == 28){
-//          delay(60000);
-//        }
-//        if(i % 13 == 0){
-//          Serial.println(comp[i]);
-//          delay(3000);
-//        }else{
-//          Serial.println(comp[i-1]);
-//          //delay(3000);
-//          //Serial.print(comp[i-1]);
-//        }
-          //Serial.print((char)&comp[i-1]);
-          Serial.print(comp[i-1]);
-          Serial.print("\n");
-          delay(1000);
-      }
-    }
-    
-//
-//    Serial.println(comp[2]);
-//    for(int i = 0; i < 24; i++){
-//      Serial.println(comp[i]);
-//    }delay(4000);
-//    for(int i = 24; i < 48; i++){
-//      Serial.println(comp[i]);
-//    }delay(4000);
-//    for(int i = 63; i < 126; i++){
-//      Serial.println(comp[i]);
-//    }delay(5000);
-//    for(int i = 126; i < 189; i++){
-//      Serial.println(comp[i]);
-//    }delay(5000);
-//    for(int i = 189; i < 252; i++){
-//      Serial.println(comp[i]);
-//    }delay(5000);
-//    for(int i = 252; i < 315; i++){
-//      Serial.println(comp[i]);
-//    }delay(5000);
-//    for(int i = 315; i < 378; i++){
-//      Serial.println(comp[i]);
-//    }
     
     size_t compressed_size = polled;
     sunk = 0;
@@ -221,7 +165,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     if (cfg->log_lvl > 1) dump_buf("decomp", decomp, polled);
     for (uint32_t i=0; i<input_size; i++) {
         if (input[i] != decomp[i]) {
-           // printf("*** mismatch at %d\n", i);
             Serial.print(F("*** mismatch at: "));
             Serial.print(i);
             Serial.print(F(" \n"));
@@ -232,7 +175,6 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     Serial.print("Decompress data: ");
     for(int i = 0; i < polled; i++){
       Serial.print(decomp[i]);
-//      Serial.print((char)&decomp[i]);
       Serial.print(", ");
     }Serial.println();
   
@@ -302,7 +244,7 @@ int main(int argc, char **argv)
 //    }Serial.println();
 
 //    Serial.print("Standard Deviation: ");
-    stdeviasi = stats.stdev(readings,length_data);
+//    stdeviasi = stats.stdev(readings,length_data);
 //    Serial.println(stdeviasi);
     
     cfg_info cfg;
