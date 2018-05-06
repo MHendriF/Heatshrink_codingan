@@ -115,14 +115,14 @@ static void decompress_and_expand_and_check(uint8_t *input,
     }
 
     if (cfg->log_lvl > 1) dump_buf("decomp", output, output_size);
-    for (uint32_t i=0; i<input_size; i++) {
-        if (input[i] != output[i]) {
-           // printf("*** mismatch at %d\n", i);
-            Serial.print(F("*** mismatch at: "));
-            Serial.print(i);
-            Serial.print(F(" \n"));
-        }
-    }
+    //compare hasil decompressi dengan data raw
+//    for (uint32_t i=0; i<input_size; i++) {
+//        if (input[i] != output[i]) {
+//            Serial.print(F("*** mismatch at: "));
+//            Serial.print(i);
+//            Serial.print(F(" \n"));
+//        }
+//    }
 
     Serial.print("Decompressed data: ");
     for(int i = 0; i < polled; i++){
@@ -131,7 +131,6 @@ static void decompress_and_expand_and_check(uint8_t *input,
     }Serial.println();
 
     delay(2000);
-
 }
 
 
@@ -158,31 +157,38 @@ int main(int argc, char **argv)
     size_t polled = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////
     //Test Decompression
-    int orig_angka[] = {
-      152, 128, 60, 1, 224, 15, 0, 120, 3, 192, 30, 0, 32
-    };
-    int length_angka = sizeof(orig_angka)/sizeof(orig_angka[0]);
-    for(int i = 0; i < length_angka; i++){
-      orig_char[i] = (uint8_t) orig_angka[i];
-    }
-    Serial.print("origin1 : ");
-    Serial.println(sizeof(orig_char));
+//    int orig_angka[] = {
+//      152, 128, 60, 1, 224, 15, 0, 120, 3, 192, 30, 0, 32
+//    };
+//    int length_angka = sizeof(orig_angka)/sizeof(orig_angka[0]);
+//    Serial.print("length_angka : ");
+//    Serial.println(sizeof(length_angka));
+//    for(int i = 0; i < length_angka; i++){
+//      orig_char[i] = (uint8_t) orig_angka[i];
+//    }
+//    Serial.print("origin1 : ");
+//    Serial.println(sizeof(orig_char));
+//
+//    for(int i = 0; i < length_angka; i++){
+//      Serial.print(orig_char[i]);
+//      Serial.print(" ");
+//    }
     
-    int length_data = 100;
-    polled = 13;
-    cfg_info cfg;
-    cfg.log_lvl = 0;
-    cfg.window_sz2 = 8;
-    cfg.lookahead_sz2 = 4;
-    cfg.decoder_input_buffer_size = 64;
-    decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
+//    int length_data = 100;
+//    polled = 13;
+//    cfg_info cfg;
+//    cfg.log_lvl = 0;
+//    cfg.window_sz2 = 8;
+//    cfg.lookahead_sz2 = 4;
+//    cfg.decoder_input_buffer_size = 64;
+ //   decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     String stringOne;
     char incomingByte;
     char buf[20];
     char *s, *orig_sz, *window_sz, *lookahead_sz, *decoder_sz, *polled_sz;
-    int i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
+    int idx=0, i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
     int num[200];
     size_t comp_sz = 200;
     size_t polleds = 0;
@@ -236,8 +242,8 @@ int main(int argc, char **argv)
               }
               else{
                 Serial.print(" ");
-                num[i] = stringOne.toInt();
-                i++;
+                num[idx] = stringOne.toInt();
+                idx++;
               }
               stringOne = "";
               memset(buf,0,20);
@@ -245,7 +251,6 @@ int main(int argc, char **argv)
         }
         else if(Serial.available() <= 0){
           Serial.println("test");
-          //Serial.println(num[0]);
           if(num[12] != 0){
             for(j=0; j<13; j++){
                Serial.print(num[j]);
@@ -262,23 +267,28 @@ int main(int argc, char **argv)
             Serial.print("f:");
             Serial.print(polled);
             if(polled != 0 && window != 0 && lookahead != 0 && decoder !=0){
-               int length_angka = sizeof(num)/sizeof(num[0]);
+               int length_angka = idx;
+               Serial.print("length data : ");
+               Serial.println(length_angka);
+               
                for(int i = 0; i < length_angka; i++){
                   origin_char[i] = (uint8_t) num[i];
                }
+
                Serial.print("origin2 : ");
                Serial.println(sizeof(origin_char));
                
-//               cfg_info cfg;
-//               cfg.log_lvl = 2;
-//               cfg.window_sz2 = window;
-//               cfg.lookahead_sz2 = lookahead;
-//               cfg.decoder_input_buffer_size = decoder;
-//               decompress_and_expand_and_check(orig_char, orig, &cfg, decomp_buffer, decomp_size, polled);
+               cfg_info cfg;
+               cfg.log_lvl = 2;
+               cfg.window_sz2 = window;
+               cfg.lookahead_sz2 = lookahead;
+               cfg.decoder_input_buffer_size = decoder;
+               decompress_and_expand_and_check(origin_char, orig, &cfg, decomp_buffer, decomp_size, polled);
 
                Serial.print(F("\n^^ Selesai\n"));
                //reinisialite
                //orig = 0, window = 0, lookahead = 0, decoder = 0, polled = 0;
+               //idx = 0;
                //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
   
                //return 0;

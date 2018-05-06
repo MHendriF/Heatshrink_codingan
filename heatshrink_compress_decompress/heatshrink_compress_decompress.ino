@@ -169,6 +169,12 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
             Serial.print(i);
             Serial.print(F(" \n"));
         }
+//        else{
+//            Serial.print(input[i]);
+//            Serial.print(F(" "));
+//            Serial.print(decomp[i]);
+//            Serial.print(F(" \n"));
+//        }
     }
 
     //tambahan
