@@ -136,7 +136,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 600
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
 
@@ -152,8 +152,7 @@ int main(int argc, char **argv)
 
     //uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-//    uint8_t orig_char[248];
-    uint8_t origin_char[248];
+    uint8_t origin_char[557];
     size_t polled = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////
     //Test Decompression
@@ -189,8 +188,8 @@ int main(int argc, char **argv)
     char buf[20];
     char *s, *orig_sz, *window_sz, *lookahead_sz, *decoder_sz, *polled_sz;
     int idx=0, i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
-    int num[300];
-    size_t comp_sz = 300;
+    int num[600];
+    size_t comp_sz = 600;
     size_t polleds = 0;
     memset(num,0,comp_sz);
     Serial.println("Incoming data :");
@@ -247,7 +246,6 @@ int main(int argc, char **argv)
         else if(Serial.available() <= 0){
           Serial.print("| idx : ");
           Serial.println(idx);
-          //Serial.println(num[171]);
           if(idx == polled && polled != 0){
             if(num[polled] != 0 || num[polled-1] != 0){
               Serial.println("challange accepted!");
@@ -265,15 +263,10 @@ int main(int argc, char **argv)
               Serial.print(decoder);
               Serial.print("f:");
               Serial.print(polled);
-              
-              //int length_angka = idx;
-              
+
               if(polled != 0 && window != 0 && lookahead != 0 && decoder !=0){
                  Serial.print(F("^^ Start!\n"));
-                 
-                 //Serial.print("length data : ");
-                 //Serial.println(length_angka);
-                 
+
                  for(int i = 0; i < polled; i++){
                     origin_char[i] = (uint8_t) num[i];
                  }
