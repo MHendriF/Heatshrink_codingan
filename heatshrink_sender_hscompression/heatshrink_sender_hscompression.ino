@@ -1,11 +1,9 @@
 // Demo Code for Heatshrink (Copyright (c) 2013-2015, Scott Vokes <vokes.s@gmail.com>)
 // embedded compression library
 // Craig Versek, Apr. 2016
-
 #include <stdint.h>
 #include <ctype.h>
 #include <Arduino.h>
-#include <QuickStats.h>
 
 #include "heatshrink_encoder.h"
 #include "heatshrink_decoder.h"
@@ -42,12 +40,6 @@ static void decompress_and_expand_and_check(uint8_t *input,
 
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(cfg->decoder_input_buffer_size,
         cfg->window_sz2, cfg->lookahead_sz2);
-//    size_t decomp_sz = input_size + (input_size/2) + 4;
-//
-//    uint8_t *decomp = (uint8_t*)malloc(decomp_sz);
-//    if (decomp == NULL) 
-//      Serial.println(F("FAIL: Malloc fail!"));
-//    memset(decomp, 0, decomp_sz);
 
     size_t compressed_size = polled2;
     size_t count  = 0;
@@ -121,14 +113,12 @@ static void decompress_and_expand_and_check(uint8_t *input,
 //        }
 //    }
 
-//    Serial.print("Decompressed data: ");
-//    for(int i = 0; i < polled; i++){
-//      Serial.print(output[i]);
-//      Serial.print(", ");
-//    }Serial.println();
-//  
-//    free(decomp);
-//    heatshrink_decoder_free(hsd);
+    Serial.print("Decompressed data: ");
+    for(int i = 0; i < polled; i++){
+      Serial.print(output[i]);
+      Serial.print(", ");
+    }Serial.println();
+
 }
 
 static int compress_and_expand_and_check(uint8_t *input, 
@@ -193,18 +183,6 @@ static int compress_and_expand_and_check(uint8_t *input,
         Serial.print(", ");
       }Serial.println();
 
-      Serial.print(output[0]);
-      Serial.print("\n");
-      for(int i = 1; i < polled; i++){
-        if(i % 13 == 0){
-          Serial.print(output[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(output[i]);
-          Serial.print("\n");
-        }
-      }
     }
     return polled;
 }
@@ -216,8 +194,6 @@ uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
 
-QuickStats stats; //initialize an instance of this class
-
 int main(int argc, char **argv)
 {
     init(); // this is needed
@@ -227,15 +203,13 @@ int main(int argc, char **argv)
     Serial.begin(9600);
     delay(1000);
     int length_data;
-    float readings[1000], stdeviasi;
    
-    uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
+    //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
     //char test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
+    uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
-//    Serial.print("length_data : ");
-//    Serial.println(length_data);
     if(length_data > 584){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
       delay(4000);
@@ -262,7 +236,7 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     cfg_info cfg;
-    cfg.log_lvl = 0;
+    cfg.log_lvl = 2;
      
     if(length_data <= 248){
       cfg.window_sz2 = 8;
@@ -279,46 +253,47 @@ int main(int argc, char **argv)
     }
     cfg.decoder_input_buffer_size = 64;
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
-    //Serial.print(polled);
-    //decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    Serial.print("polled");
+    Serial.println(polled);
+    decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
     //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
     //Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
     //Serial.println("Compressed data: ");
-    Serial.print(comp_buffer[0]);
-    Serial.print("\n");
-    for(int i = 1; i < polled; i++){
-        if(i % 13 == 0){
-          Serial.print(comp_buffer[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(comp_buffer[i]);
-          Serial.print("\n");
-        }
-    }
-    delay(3000);
-    
-    //lenght data original
-    Serial.print("a");
-    Serial.print(length_data);
-    Serial.print("\n");
-
-    //config
-    Serial.print("b");
-    Serial.print(cfg.window_sz2);
-    Serial.print("\n");
-    Serial.print("c");
-    Serial.print(cfg.lookahead_sz2);
-    Serial.print("\n");
-    Serial.print("d");
-    Serial.print(cfg.decoder_input_buffer_size);
-    Serial.print("\n");
-
-    //Polled
-    Serial.print("f");
-    Serial.print(polled);
-    Serial.print("\n");
+//    Serial.print(comp_buffer[0]);
+//    Serial.print("\n");
+//    for(int i = 1; i < polled; i++){
+//        if(i % 13 == 0){
+//          Serial.print(comp_buffer[i]);
+//          Serial.print("\n");
+//          delay(3000);
+//        }else{
+//          Serial.print(comp_buffer[i]);
+//          Serial.print("\n");
+//        }
+//    }
+//    delay(3000);
+//    
+//    //lenght data original
+//    Serial.print("a");
+//    Serial.print(length_data);
+//    Serial.print("\n");
+//
+//    //config
+//    Serial.print("b");
+//    Serial.print(cfg.window_sz2);
+//    Serial.print("\n");
+//    Serial.print("c");
+//    Serial.print(cfg.lookahead_sz2);
+//    Serial.print("\n");
+//    Serial.print("d");
+//    Serial.print(cfg.decoder_input_buffer_size);
+//    Serial.print("\n");
+//
+//    //Polled
+//    Serial.print("f");
+//    Serial.print(polled);
+//    Serial.print("\n");
    
     
     for ( ;; ){

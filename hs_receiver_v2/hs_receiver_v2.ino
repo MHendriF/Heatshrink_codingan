@@ -152,8 +152,8 @@ int main(int argc, char **argv)
 
     //uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-    uint8_t orig_char[100];
-    uint8_t origin_char[100];
+//    uint8_t orig_char[248];
+    uint8_t origin_char[248];
     size_t polled = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////
     //Test Decompression
@@ -189,8 +189,8 @@ int main(int argc, char **argv)
     char buf[20];
     char *s, *orig_sz, *window_sz, *lookahead_sz, *decoder_sz, *polled_sz;
     int idx=0, i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
-    int num[200];
-    size_t comp_sz = 200;
+    int num[300];
+    size_t comp_sz = 300;
     size_t polleds = 0;
     memset(num,0,comp_sz);
     Serial.println("Incoming data :");
@@ -214,31 +214,26 @@ int main(int argc, char **argv)
                   removeChar(buf, 'a');
                   stringOne = buf;
                   orig = stringOne.toInt();
-                  Serial.println(orig);
               }
               else if (window_sz != NULL){
                   removeChar(buf, 'b');
                   stringOne = buf;
                   window = stringOne.toInt();
-                  Serial.println(window);
               }
               else if (lookahead_sz != NULL){
                   removeChar(buf, 'c');
                   stringOne = buf;
                   lookahead = stringOne.toInt();
-                  Serial.print(lookahead);
               }
               else if (decoder_sz != NULL){
                   removeChar(buf, 'd');
                   stringOne = buf;
                   decoder = stringOne.toInt();
-                  Serial.println(decoder);
               }
               else if (polled_sz != NULL){
                   removeChar(buf, 'f');
                   stringOne = buf;
                   polled = stringOne.toInt();
-                  Serial.println(polled);
               }
               else{
                 Serial.print(" ");
@@ -250,49 +245,63 @@ int main(int argc, char **argv)
            }
         }
         else if(Serial.available() <= 0){
-          Serial.println("test");
-          if(num[12] != 0){
-            for(j=0; j<13; j++){
-               Serial.print(num[j]);
-               Serial.print(" ");
-            }
-            Serial.print("a:");
-            Serial.print(orig);
-            Serial.print("b:");
-            Serial.print(window);
-            Serial.print("c:");
-            Serial.print(lookahead);
-            Serial.print("d:");
-            Serial.print(decoder);
-            Serial.print("f:");
-            Serial.print(polled);
-            if(polled != 0 && window != 0 && lookahead != 0 && decoder !=0){
-               int length_angka = idx;
-               Serial.print("length data : ");
-               Serial.println(length_angka);
-               
-               for(int i = 0; i < length_angka; i++){
-                  origin_char[i] = (uint8_t) num[i];
-               }
-
-               Serial.print("origin2 : ");
-               Serial.println(sizeof(origin_char));
-               
-               cfg_info cfg;
-               cfg.log_lvl = 2;
-               cfg.window_sz2 = window;
-               cfg.lookahead_sz2 = lookahead;
-               cfg.decoder_input_buffer_size = decoder;
-               decompress_and_expand_and_check(origin_char, orig, &cfg, decomp_buffer, decomp_size, polled);
-
-               Serial.print(F("\n^^ Selesai\n"));
-               //reinisialite
-               //orig = 0, window = 0, lookahead = 0, decoder = 0, polled = 0;
-               //idx = 0;
-               //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
+          Serial.print("| idx : ");
+          Serial.println(idx);
+          //Serial.println(num[171]);
+          if(idx == polled && polled != 0){
+            if(num[polled] != 0 || num[polled-1] != 0){
+              Serial.println("challange accepted!");
+              for(j=0; j<polled; j++){
+                 Serial.print(num[j]);
+                 Serial.print(" ");
+              }
+              Serial.print("a:");
+              Serial.print(orig);
+              Serial.print("b:");
+              Serial.print(window);
+              Serial.print("c:");
+              Serial.print(lookahead);
+              Serial.print("d:");
+              Serial.print(decoder);
+              Serial.print("f:");
+              Serial.print(polled);
+              
+              //int length_angka = idx;
+              
+              if(polled != 0 && window != 0 && lookahead != 0 && decoder !=0){
+                 Serial.print(F("^^ Start!\n"));
+                 
+                 //Serial.print("length data : ");
+                 //Serial.println(length_angka);
+                 
+                 for(int i = 0; i < polled; i++){
+                    origin_char[i] = (uint8_t) num[i];
+                 }
   
-               //return 0;
-               //delay(5000);
+                 Serial.print("origin2 : ");
+                 Serial.println(sizeof(origin_char));
+                 
+                 cfg_info cfg;
+                 cfg.log_lvl = 2;
+                 cfg.window_sz2 = window;
+                 cfg.lookahead_sz2 = lookahead;
+                 cfg.decoder_input_buffer_size = decoder;
+                 decompress_and_expand_and_check(origin_char, orig, &cfg, decomp_buffer, decomp_size, polled);
+  
+                 Serial.print(F("\n^^ Selesai\n"));
+                 //reinisialite
+                 //orig = 0, window = 0, lookahead = 0, decoder = 0, polled = 0;
+                 //idx = 0;
+                 //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
+    
+                 //return 0;
+                 //delay(5000);
+              }
+            }else{
+              Serial.print(num[polled-1]);
+              Serial.print(" ");
+              Serial.print(num[polled]);
+              Serial.print(F("\n^^ Ampasi\n"));
             }
           }
           delay(3000);
