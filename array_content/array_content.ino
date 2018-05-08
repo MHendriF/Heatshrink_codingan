@@ -18,12 +18,6 @@ int main(int argc, char **argv)
     removeChar(stringTwo, 'a' );
     Serial.println(stringTwo);
 
-    if (allCharactersSame(s){
-      
-    }
-    else{
-      
-    }
        
     for ( ;; )
     {

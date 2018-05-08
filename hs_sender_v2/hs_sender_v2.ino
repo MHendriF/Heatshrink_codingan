@@ -134,9 +134,7 @@ int main(int argc, char **argv)
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data";
     
     length_data = sizeof(test_data)/sizeof(test_data[0]);
-//    Serial.print("length_data : ");
-//    Serial.println(length_data);
-    //delay(9000);
+
     if(length_data > 584){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
       delay(4000);
@@ -144,9 +142,7 @@ int main(int argc, char **argv)
     }
 
     uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
-    //uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
     memcpy(orig_buffer, test_data, length_data);
-   
     size_t polled = 0;
     
     cfg_info cfg;
@@ -171,7 +167,6 @@ int main(int argc, char **argv)
     //decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
     //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
-    //Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
     //Serial.println("Compressed data: ");
     Serial.print(comp_buffer[0]);
     Serial.print("\n");
