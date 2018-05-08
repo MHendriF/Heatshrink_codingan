@@ -86,13 +86,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
             Serial.print(F("FAIL: Decompressed data is larger than original input!"));
         }
     }
-    if (cfg->log_lvl > 0){
-        Serial.print(F("in: "));
-        Serial.print(compressed_size);
-        Serial.print(F(" decompressed: "));
-        Serial.print(polled);
-        Serial.print(F(" \n")); 
-    }
+
     if (polled != input_size) {
         Serial.print(F("polled: "));
         Serial.print(polled);
@@ -113,12 +107,19 @@ static void decompress_and_expand_and_check(uint8_t *input,
 //        }
 //    }
 
-    Serial.print("Decompressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(output[i]);
-      Serial.print(", ");
-    }Serial.println();
+    if (cfg->log_lvl > 0){
+        Serial.print(F("in: "));
+        Serial.print(compressed_size);
+        Serial.print(F(" decompressed: "));
+        Serial.print(polled);
+        Serial.print(F(" \n")); 
 
+//        Serial.print(F("Decompressed data: "));
+//        for(int i = 0; i < polled; i++){
+//          Serial.print(output[i]);
+//          Serial.print(F(", "));
+//        }Serial.print(F(" \n"));
+    }
 }
 
 static int compress_and_expand_and_check(uint8_t *input, 
@@ -177,11 +178,11 @@ static int compress_and_expand_and_check(uint8_t *input,
       Serial.print(polled);
       Serial.print(F(" \n")); 
       
-      Serial.print("Compressed data: ");
-      for(int i = 0; i < polled; i++){
-        Serial.print(output[i]);
-        Serial.print(", ");
-      }Serial.println();
+//      Serial.print("Compressed data: ");
+//      for(int i = 0; i < polled; i++){
+//        Serial.print(output[i]);
+//        Serial.print(", ");
+//      }Serial.println();
 
     }
     return polled;
@@ -189,7 +190,7 @@ static int compress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 600
+#define BUFFER_SIZE 1000
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
@@ -230,65 +231,30 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     cfg_info cfg;
-    cfg.log_lvl = 2;
+    cfg.log_lvl = 1;
      
-    if(length_data <= 248){
+    if(length_data <= 248){ //high
       cfg.window_sz2 = 8;
       cfg.lookahead_sz2 = 4;
-    }else if(length_data > 248 && length_data <= 517){
+    }else if(length_data > 248 && length_data <= 517){ //medium
       cfg.window_sz2 = 6;
       cfg.lookahead_sz2 = 3;
-    }else if(length_data > 517 && length_data <= 561){
-      cfg.window_sz2 = 5;
-      cfg.lookahead_sz2 = 3;
-    }else if(length_data > 561 && length_data <= 584){
+    }else if(length_data > 517 && length_data <= 584){ //low
       cfg.window_sz2 = 4;
       cfg.lookahead_sz2 = 3;
     }
     cfg.decoder_input_buffer_size = 64;
+    uint32_t t1 = micros();
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
-    Serial.print("polled");
-    Serial.println(polled);
+    //Serial.print("polled");
+    //Serial.println(polled);
+    uint32_t t2 = micros();
     decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
-    //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
-
-    //Serial.println("-----------------------------------------------------------------------------------------------------------------------------");
-    //Serial.println("Compressed data: ");
-//    Serial.print(comp_buffer[0]);
-//    Serial.print("\n");
-//    for(int i = 1; i < polled; i++){
-//        if(i % 13 == 0){
-//          Serial.print(comp_buffer[i]);
-//          Serial.print("\n");
-//          delay(3000);
-//        }else{
-//          Serial.print(comp_buffer[i]);
-//          Serial.print("\n");
-//        }
-//    }
-//    delay(3000);
-//    
-//    //lenght data original
-//    Serial.print("a");
-//    Serial.print(length_data);
-//    Serial.print("\n");
-//
-//    //config
-//    Serial.print("b");
-//    Serial.print(cfg.window_sz2);
-//    Serial.print("\n");
-//    Serial.print("c");
-//    Serial.print(cfg.lookahead_sz2);
-//    Serial.print("\n");
-//    Serial.print("d");
-//    Serial.print(cfg.decoder_input_buffer_size);
-//    Serial.print("\n");
-//
-//    //Polled
-//    Serial.print("f");
-//    Serial.print(polled);
-//    Serial.print("\n");
-   
+    uint32_t t3 = micros();
+    float comp_ratio = ((float) length_data / comp_size);
+    Serial.print("Compression ratio: ");Serial.println(comp_ratio);
+    Serial.print("Time to compress: ");Serial.println((t2-t1)/1e6,6);
+    Serial.print("Time to decompress: ");Serial.println((t3-t2)/1e6,6);
     
     for ( ;; ){
       //Serial.print("a100");
