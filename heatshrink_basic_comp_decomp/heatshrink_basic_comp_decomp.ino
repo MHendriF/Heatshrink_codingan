@@ -245,6 +245,8 @@ int main(int argc, char **argv)
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
       delay(4000);
       return 0;
+
+      
     }
 
     uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
