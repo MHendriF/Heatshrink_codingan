@@ -5,10 +5,11 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <Arduino.h>
+#include <String.h>
 
-#include "heatshrink_encoder.h"
-#include "heatshrink_decoder.h"
-#include "greatest.h"
+#include <heatshrink_encoder.h>
+#include <heatshrink_decoder.h>
+#include <greatest.h>
 
 #define arduinoLED 13   // Arduino LED on board
 
@@ -112,7 +113,7 @@ static int compress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 600
+#define BUFFER_SIZE 700
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 
@@ -124,19 +125,23 @@ int main(int argc, char **argv)
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
     delay(1000);
-    int length_data;
+    uint32_t length_data;
    
     //uint8_t test_data[] = {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'};
     //557
-    uint8_t test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
+    //uint8_t test_data [] = "e8h5888e8h5888e8h5888yyxnyyxny454yyxnqx5e7yyxntu98xge9pdgzycb7had5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvvc828dctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne";
     
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data</a></div><div id=\"collapse_1\" class=\"panel-collapse col";
     //uint8_t test_data [] = "<div class=\"panel panel-default\"><div id=\"heading_1\" class=\"panel-heading activestate\"><a href=\"#collapse_1\" data-toggle=\"collapse\" data-parent=\"#accordion_1\">1. Maksimal Upload lampiran data";
-    
+
+    //1345
+    uint8_t test_data [] = "</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed neest affert ocurreret cu3242 </div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge </div></div><di</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb333</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxnt4449pdhad5";
+
+
     length_data = sizeof(test_data)/sizeof(test_data[0]);
 
-    if(length_data > 584){
-      Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 584 karakter");
+    if(length_data > 1345){
+      Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 1345 karakter");
       delay(4000);
       return 0;
     }
@@ -147,20 +152,22 @@ int main(int argc, char **argv)
     
     cfg_info cfg;
     cfg.log_lvl = 0;
+    cfg.window_sz2 = 8;
+    cfg.lookahead_sz2 = 5;
      
-    if(length_data <= 248){
-      cfg.window_sz2 = 8;
-      cfg.lookahead_sz2 = 4;
-    }else if(length_data > 248 && length_data <= 517){
-      cfg.window_sz2 = 6;
-      cfg.lookahead_sz2 = 3;
-    }else if(length_data > 517 && length_data <= 561){
-      cfg.window_sz2 = 5;
-      cfg.lookahead_sz2 = 3;
-    }else if(length_data > 561 && length_data <= 584){
-      cfg.window_sz2 = 4;
-      cfg.lookahead_sz2 = 3;
-    }
+//    if(length_data <= 248){
+//      cfg.window_sz2 = 8;
+//      cfg.lookahead_sz2 = 4;
+//    }else if(length_data > 248 && length_data <= 517){
+//      cfg.window_sz2 = 6;
+//      cfg.lookahead_sz2 = 3;
+//    }else if(length_data > 517 && length_data <= 561){
+//      cfg.window_sz2 = 5;
+//      cfg.lookahead_sz2 = 3;
+//    }else if(length_data > 561 && length_data <= 584){
+//      cfg.window_sz2 = 4;
+//      cfg.lookahead_sz2 = 3;
+//    }
     cfg.decoder_input_buffer_size = 64;
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
     //Serial.print(polled);

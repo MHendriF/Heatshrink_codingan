@@ -7,9 +7,9 @@
 #include <Arduino.h>
 #include <QuickStats.h>
 
-#include "heatshrink_encoder.h"
-#include "heatshrink_decoder.h"
-#include "greatest.h"
+#include <heatshrink_encoder.h>
+#include <heatshrink_decoder.h>
+#include <greatest.h>
 
 #define arduinoLED 13   // Arduino LED on board
 
