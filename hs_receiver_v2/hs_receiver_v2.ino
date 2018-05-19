@@ -136,7 +136,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 1345
+#define BUFFER_SIZE 1400
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
 
@@ -152,44 +152,16 @@ int main(int argc, char **argv)
 
     //uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-    uint8_t origin_char[1400];
+    uint8_t origin_char[BUFFER_SIZE];
     size_t polled = 0;
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //Test Decompression
-//    int orig_angka[] = {
-//      152, 128, 60, 1, 224, 15, 0, 120, 3, 192, 30, 0, 32
-//    };
-//    int length_angka = sizeof(orig_angka)/sizeof(orig_angka[0]);
-//    Serial.print("length_angka : ");
-//    Serial.println(sizeof(length_angka));
-//    for(int i = 0; i < length_angka; i++){
-//      orig_char[i] = (uint8_t) orig_angka[i];
-//    }
-//    Serial.print("origin1 : ");
-//    Serial.println(sizeof(orig_char));
-//
-//    for(int i = 0; i < length_angka; i++){
-//      Serial.print(orig_char[i]);
-//      Serial.print(" ");
-//    }
-    
-//    int length_data = 100;
-//    polled = 13;
-//    cfg_info cfg;
-//    cfg.log_lvl = 0;
-//    cfg.window_sz2 = 8;
-//    cfg.lookahead_sz2 = 4;
-//    cfg.decoder_input_buffer_size = 64;
- //   decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     String stringOne;
     char incomingByte;
     char buf[20];
     char *s, *orig_sz, *window_sz, *lookahead_sz, *decoder_sz, *polled_sz;
     int idx=0, i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
-    int num[1400];
-    size_t comp_sz = 1345;
+    int num[BUFFER_SIZE];
+    size_t comp_sz = BUFFER_SIZE;
     size_t polleds = 0;
     memset(num,0,comp_sz);
     Serial.println("Incoming data :");
