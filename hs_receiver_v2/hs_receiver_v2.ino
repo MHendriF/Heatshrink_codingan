@@ -7,9 +7,9 @@
 #include <Arduino.h>
 #include <String.h>
 
-#include "heatshrink_encoder.h"
-#include "heatshrink_decoder.h"
-#include "greatest.h"
+#include <heatshrink_encoder.h>
+#include <heatshrink_decoder.h>
+#include <greatest.h>
 
 #define arduinoLED 13   // Arduino LED on board
 
@@ -136,7 +136,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 600
+#define BUFFER_SIZE 1345
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
 
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
 
     //uint32_t comp_size   = BUFFER_SIZE; //this will get updated by reference
     uint32_t decomp_size = BUFFER_SIZE; //this will get updated by reference
-    uint8_t origin_char[557];
+    uint8_t origin_char[1400];
     size_t polled = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////
     //Test Decompression
@@ -188,8 +188,8 @@ int main(int argc, char **argv)
     char buf[20];
     char *s, *orig_sz, *window_sz, *lookahead_sz, *decoder_sz, *polled_sz;
     int idx=0, i=0, j=0, orig=0, window=0, lookahead=0, decoder=0;
-    int num[600];
-    size_t comp_sz = 600;
+    int num[1400];
+    size_t comp_sz = 1345;
     size_t polleds = 0;
     memset(num,0,comp_sz);
     Serial.println("Incoming data :");
@@ -290,11 +290,41 @@ int main(int argc, char **argv)
                  //return 0;
                  //delay(5000);
               }
-            }else{
+            }else if(polled != 0 && window != 0 && lookahead != 0 && decoder !=0){
+//              Serial.print("a:");
+//              Serial.print(orig);
+//              Serial.print("b:");
+//              Serial.print(window);
+//              Serial.print("c:");
+//              Serial.print(lookahead);
+//              Serial.print("d:");
+//              Serial.print(decoder);
+//              Serial.print("f:");
+//              Serial.print(polled);
+
+              Serial.print(F("^^ Start Gelombang kedua!\n"));
+
+               for(int i = 0; i < polled; i++){
+                  origin_char[i] = (uint8_t) num[i];
+               }
+
+               Serial.print("origin2 : ");
+               Serial.println(sizeof(origin_char));
+               
+               cfg_info cfg;
+               cfg.log_lvl = 2;
+               cfg.window_sz2 = window;
+               cfg.lookahead_sz2 = lookahead;
+               cfg.decoder_input_buffer_size = decoder;
+               decompress_and_expand_and_check(origin_char, orig, &cfg, decomp_buffer, decomp_size, polled);
+
+               Serial.print(F("\n^^ Selesai\n"));
+            }
+            else{
               Serial.print(num[polled-1]);
               Serial.print(" ");
               Serial.print(num[polled]);
-              Serial.print(F("\n^^ Ampasi\n"));
+              Serial.print(F("\n^^ Ampas\n"));
             }
           }
           delay(3000);

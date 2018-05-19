@@ -113,7 +113,7 @@ static int compress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 700
+#define BUFFER_SIZE 1345
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 
@@ -171,14 +171,12 @@ int main(int argc, char **argv)
     cfg.decoder_input_buffer_size = 64;
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
     //Serial.print(polled);
-    //decompress_and_expand_and_check(comp_buffer, length_data, &cfg, decomp_buffer, decomp_size, polled);
-    //decompress_and_expand_and_check(orig_char, length_data, &cfg, decomp_buffer, decomp_size, polled);
 
     //Serial.println("Compressed data: ");
     Serial.print(comp_buffer[0]);
     Serial.print("\n");
     for(int i = 1; i < polled; i++){
-        if(i % 13 == 0){
+        if(i % 16 == 0){
           Serial.print(comp_buffer[i]);
           Serial.print("\n");
           delay(3000);
