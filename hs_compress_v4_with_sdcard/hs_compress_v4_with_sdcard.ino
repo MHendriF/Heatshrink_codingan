@@ -106,7 +106,7 @@ static int compress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 1345
+#define BUFFER_SIZE 1280
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 
@@ -136,11 +136,11 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     // Create/Open file 
-    myFile = SD.open("test.txt", FILE_WRITE);
+    myFile = SD.open("test2.txt", FILE_WRITE);
 
     int iterate = 0;
     // Reading the file
-    myFile = SD.open("test.txt");
+    myFile = SD.open("test2.txt");
     if (myFile) {
       Serial.println("Read:");
       // Reading the whole file
@@ -159,9 +159,9 @@ int main(int argc, char **argv)
           //Serial.println(length_data);
           
           cfg_info cfg;
-          cfg.log_lvl = 0;
-          cfg.window_sz2 = 7;
-          cfg.lookahead_sz2 = 5;
+          cfg.log_lvl = 1;
+          cfg.window_sz2 = 5;
+          cfg.lookahead_sz2 = 4;
           cfg.decoder_input_buffer_size = 64;
           uint32_t t1 = micros();
           polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);

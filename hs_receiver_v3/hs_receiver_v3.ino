@@ -97,13 +97,7 @@ static void decompress_and_expand_and_check(uint8_t *input,
             Serial.print(F("FAIL: Decompressed data is larger than original input!"));
         }
     }
-    if (cfg->log_lvl > 0){
-        Serial.print(F("in: "));
-        Serial.print(compressed_size);
-        Serial.print(F(" decompressed: "));
-        Serial.print(polled);
-        Serial.print(F(" \n")); 
-    }
+   
     if (polled != input_size) {
         Serial.print(F("polled: "));
         Serial.print(polled);
@@ -124,19 +118,26 @@ static void decompress_and_expand_and_check(uint8_t *input,
 //        }
 //    }
 
-    Serial.print("Decompressed data: ");
-    for(int i = 0; i < polled; i++){
-      Serial.print(output[i]);
-      Serial.print(", ");
-    }Serial.println();
+    if (cfg->log_lvl > 0){
+        Serial.print(F("in: "));
+        Serial.print(compressed_size);
+        Serial.print(F(" decompressed: "));
+        Serial.print(polled);
+        Serial.print(F(" \n"));
 
-    delay(2000);
+        Serial.print("Decompressed data: ");
+        for(int i = 0; i < polled; i++){
+          Serial.print(output[i]);
+          Serial.print(", ");
+        }Serial.println();
+    }
+    //delay(2000);
 }
 
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 1400
+#define BUFFER_SIZE 600
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t decomp_buffer[BUFFER_SIZE];
 
@@ -255,7 +256,7 @@ int main(int argc, char **argv)
                  Serial.println(sizeof(origin_char));
                  
                  cfg_info cfg;
-                 cfg.log_lvl = 2;
+                 cfg.log_lvl = 1;
                  cfg.window_sz2 = window;
                  cfg.lookahead_sz2 = lookahead;
                  cfg.decoder_input_buffer_size = decoder;

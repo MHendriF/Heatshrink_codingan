@@ -113,7 +113,7 @@ static int compress_and_expand_and_check(uint8_t *input,
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 1345
+#define BUFFER_SIZE 1647
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 
@@ -170,7 +170,8 @@ int main(int argc, char **argv)
 
     //1647
     //uint8_t test_data [] = "</div></div><div id=\"collapse_2\" class=xny454yyxdvd3u2sv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcyy9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcq3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed neest affert ocurreret cu3242 </div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge </div></div><di</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb333</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxnt4449pdhad5yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcyyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bn9b5t3oc";
-
+    uint8_t test_data [] = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+    
     //1750
     //uint8_t test_data [] = "</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhnwdr79bcvctdvd3u2sv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcyyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcq3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcjpp5k8cxmcx4d8cp5um64m4khaurf6tzqy3wvsnzb7ax5px2avreuaf5jwtv382vvhdca6n7z62yqbcvj78ue66kq8qzbamgcollapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed ne oratio delenit senserit.&nbsp;</div></div><div id=\"collapse_2\" class=\"panel-collapse collapse in\"><div class=\"panel-body pa-15\">Lorem ipsum dolor sit amet, est affert ocurreret cu, sed neest affert ocurreret cu3242 </div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabbfn9b5t3vu</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge </div></div><di</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juxcn9vdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthak6qtwxjwwabb333</div></div><div id=\"collapse_2\" class=xny454yyxnqx5e7yyxnt4449pdhad5yyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bcvctdvd3usv9qjkz5k4u6vthapk6qtwxjwwabbfn9b5t3vug3xcyyxnqx5e7yyxntu98xge9pdhad5q3vdcfgh3333338juvdd6nm33cccnwdr79bn9b5t3vug3xctdvd3u2sv9qjkz5k4u6vctdvd3u2sv9qjkz5k4u6v3333333c";
 
@@ -182,7 +183,7 @@ int main(int argc, char **argv)
 
     length_data = sizeof(test_data)/sizeof(test_data[0]);
 
-    if(length_data > 1345){
+    if(length_data > 1647){
       Serial.print("Data terlalu besar, data yang muat untuk kompresi maksimal 1345 karakter");
       delay(4000);
       return 0;
@@ -193,9 +194,9 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     cfg_info cfg;
-    cfg.log_lvl = 0;
-    cfg.window_sz2 = 8;
-    cfg.lookahead_sz2 = 5;
+    cfg.log_lvl = 1;
+    cfg.window_sz2 = 4;
+    cfg.lookahead_sz2 = 3;
      
 //    if(length_data <= 248){
 //      cfg.window_sz2 = 8;

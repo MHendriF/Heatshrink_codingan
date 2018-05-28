@@ -302,35 +302,35 @@ int main(int argc, char **argv)
     Serial.println(cfg.lookahead_sz2);
     
     for ( ;; ){
-        if(Serial.available() > 0){
-        incomingByte = Serial.read();
-        //length_data = sizeof(num)/sizeof(num[0]);
-        if(incomingByte != '\n'){
-            Serial.print(incomingByte);
-            stringOne += incomingByte;
-        }
-        elseif(incomingByte == '^'){
-        
-        }else{
-          //Serial.println(stringOne);
-          Serial.print(" ");
-          num[i] = stringOne.toInt();
-          stringOne = "";
-          i++;
-         }
-      }
-      else if(Serial.available() <= 0){
-        Serial.println("test");
-        //Serial.println(num[0]);
-        if(num[12] != 0){
-          for(j=0; j<13; j++){
-             Serial.println(num[j]);
-             //Serial.println(" ");
-          }
-        }
-        delay(3000);
-      }
-      delay(5000);
+//        if(Serial.available() > 0){
+//        incomingByte = Serial.read();
+//        //length_data = sizeof(num)/sizeof(num[0]);
+//        if(incomingByte != '\n'){
+//            Serial.print(incomingByte);
+//            stringOne += incomingByte;
+//        }
+//        elseif(incomingByte == '^'){
+//        
+//        }else{
+//          //Serial.println(stringOne);
+//          Serial.print(" ");
+//          num[i] = stringOne.toInt();
+//          stringOne = "";
+//          i++;
+//         }
+//      }
+//      else if(Serial.available() <= 0){
+//        Serial.println("test");
+//        //Serial.println(num[0]);
+//        if(num[12] != 0){
+//          for(j=0; j<13; j++){
+//             Serial.println(num[j]);
+//             //Serial.println(" ");
+//          }
+//        }
+//        delay(3000);
+//      }
+//      delay(5000);
     }
         
 }
