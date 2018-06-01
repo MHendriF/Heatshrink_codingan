@@ -105,9 +105,8 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
 }
 
 
-
 /******************************************************************************/
-#define BUFFER_SIZE 1280
+#define BUFFER_SIZE 1640
 
 int main(int argc, char **argv)
 {
@@ -135,11 +134,11 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     // Create/Open file 
-    myFile = SD.open("test3.txt", FILE_WRITE);
+    myFile = SD.open("test5.txt", FILE_WRITE);
 
     int iterate = 0;
     // Reading the file
-    myFile = SD.open("test3.txt");
+    myFile = SD.open("test5.txt");
     if (myFile) {
       Serial.println("Read:");
       // Reading the whole file
@@ -158,20 +157,22 @@ int main(int argc, char **argv)
           //Serial.println(length_data);
           
           cfg_info cfg;
-          cfg.log_lvl = 1;
-          cfg.window_sz2 = 7;
-          cfg.lookahead_sz2 = 5;
+          cfg.log_lvl = 0;
+          cfg.window_sz2 = 8;
+          cfg.lookahead_sz2 = 3;
           cfg.decoder_input_buffer_size = 64;
-          //uint32_t t1 = micros();
-          //polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
+          uint32_t t1 = micros();
           polled = compress_and_expand_and_check(test_data, length_data, &cfg);
-          //uint32_t t2 = micros();
-          //Serial.print("Time to compress: ");
-          //Serial.println((t2-t1)/1e6,6);
+          uint32_t t2 = micros();
           Serial.print("Polled: ");
           Serial.println(polled);
+          Serial.print("Time to compress: ");
+          Serial.println((t2-t1)/1e6,6);
           Serial.println();
           
+
+          t1 = 0;
+          t2 = 0;
           memset(test_data, 0, data_sz);
           
           delay(2000);
