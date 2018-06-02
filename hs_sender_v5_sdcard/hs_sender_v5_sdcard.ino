@@ -100,18 +100,18 @@ static int compress_and_expand_and_check(uint8_t *input,
         Serial.print(", ");
       }Serial.println();
 
-      Serial.print(output[0]);
-      Serial.print("\n");
-      for(int i = 1; i < polled; i++){
-        if(i % 13 == 0){
-          Serial.print(output[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(output[i]);
-          Serial.print("\n");
-        }
-      }
+//      Serial.print(output[0]);
+//      Serial.print("\n");
+//      for(int i = 1; i < polled; i++){
+//        if(i % 13 == 0){
+//          Serial.print(output[i]);
+//          Serial.print("\n");
+//          delay(3000);
+//        }else{
+//          Serial.print(output[i]);
+//          Serial.print("\n");
+//        }
+//      }
     }
     return polled;
 }

@@ -121,6 +121,7 @@ int main(int argc, char **argv)
     char test_data [data_sz];
 
     uint32_t comp_size = BUFFER_SIZE;
+    size_t polled = 0;
     
     // SD Card Initialization
     if (SD.begin())
@@ -131,7 +132,6 @@ int main(int argc, char **argv)
       Serial.println("SD card initialization failed");
       return;
     }
-    size_t polled = 0;
     
     // Create/Open file 
     myFile = SD.open("test5.txt", FILE_WRITE);
