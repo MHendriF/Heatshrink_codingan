@@ -13,7 +13,7 @@ void setup() {
     
   Serial.begin(9600);
   pinMode(pinCS, OUTPUT);
-  
+  int iterate = 0;
   // SD Card Initialization
   if (SD.begin())
   {
@@ -25,17 +25,20 @@ void setup() {
   }
   
   // Create/Open file 
-  myFile = SD.open("test.txt", FILE_WRITE);
+  myFile = SD.open("test5.txt", FILE_WRITE);
   
   // Reading the file
-  myFile = SD.open("test.txt");
+  myFile = SD.open("test5.txt");
   if (myFile) {
     Serial.println("Read:");
     // Reading the whole file
     while (myFile.available()) {
       buffer = myFile.readStringUntil('\n');
+      iterate++;
+      Serial.print("Baris ke : ");
+      Serial.println(iterate);
       Serial.println(buffer); //Printing for debugging purpose
-      delay(4000);
+      //delay(4000);
    }
     myFile.close();
   }
