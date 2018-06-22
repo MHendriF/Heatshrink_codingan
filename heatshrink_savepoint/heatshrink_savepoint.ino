@@ -110,6 +110,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     size_t compressed_size = polled;
     sunk = 0;
     polled = 0;
+    Serial.println(count);
     
     if (cfg->log_lvl > 1) {
         Serial.print(F("\n^^ DECOMPRESSING\n"));

@@ -136,7 +136,7 @@ int main(int argc, char **argv)
     uint32_t length_data;
     String bufferSD;
     char test_data [data_sz];
-    int base = 16;
+    int base = 15;
     int g = 0; //node
 
     uint32_t comp_size = BUFFER_SIZE;
@@ -153,11 +153,11 @@ int main(int argc, char **argv)
     size_t polled = 0;
 
      // Create/Open file 
-    myFile = SD.open("test_584.txt", FILE_WRITE);
+    myFile = SD.open("test0.txt", FILE_WRITE);
 
     int iterate = 0;
     // Reading the file
-    myFile = SD.open("test_584.txt");
+    myFile = SD.open("test0.txt");
     if (myFile) {
       //Serial.println("Read:");
       // Reading the whole file
@@ -188,6 +188,10 @@ int main(int argc, char **argv)
           cfg.decoder_input_buffer_size = 64;
           polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
 
+          Serial.print("x");
+          Serial.print(length_data);
+          Serial.print("\n");
+          
           //Serial.println("Compressed data: ");
           Serial.print(comp_buffer[0]);
           Serial.print("\n");

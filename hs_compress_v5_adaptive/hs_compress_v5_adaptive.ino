@@ -131,9 +131,9 @@ int main(int argc, char **argv)
     }
     
     // Create/Open file 
-    myFile = SD.open("test0.txt", FILE_WRITE);
+    myFile = SD.open("training.txt", FILE_WRITE);
     // Reading the file
-    myFile = SD.open("test0.txt");
+    myFile = SD.open("training.txt");
     
     if (myFile) {
       Serial.println("Read:");
@@ -148,13 +148,12 @@ int main(int argc, char **argv)
           buffer_size = bufferSD.length();
           char test_data [buffer_size];
           comp_size = buffer_size;
-          //Serial.println(buffer_size);
+          Serial.println(buffer_size);
           
           //Prepare to commpression
           bufferSD.toCharArray(test_data, buffer_size);
           length_data = sizeof(test_data)/sizeof(test_data[0]);
-          //Serial.println(length_data);
-          
+
           cfg_info cfg;
           cfg.log_lvl = 1;
           cfg.decoder_input_buffer_size = 64;
@@ -169,6 +168,10 @@ int main(int argc, char **argv)
           else if(buffer_size > 1345 and buffer_size <= 1640){
             cfg.window_sz2 = 7;
             cfg.lookahead_sz2 = 6;
+          }
+          else if(buffer_size > 1640){
+            cfg.window_sz2 = 6;
+            cfg.lookahead_sz2 = 5;
           }
                
           //uint32_t t1 = micros();
