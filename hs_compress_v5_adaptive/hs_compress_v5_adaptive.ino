@@ -131,9 +131,9 @@ int main(int argc, char **argv)
     }
     
     // Create/Open file 
-    myFile = SD.open("training.txt", FILE_WRITE);
+    myFile = SD.open("test.txt", FILE_WRITE);
     // Reading the file
-    myFile = SD.open("training.txt");
+    myFile = SD.open("test.txt");
     
     if (myFile) {
       Serial.println("Read:");

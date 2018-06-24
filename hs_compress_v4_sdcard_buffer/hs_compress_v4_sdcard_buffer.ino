@@ -134,11 +134,11 @@ int main(int argc, char **argv)
     }
     
     // Create/Open file 
-    myFile = SD.open("test5.txt", FILE_WRITE);
+    myFile = SD.open("test.txt", FILE_WRITE);
 
     int iterate = 0;
     // Reading the file
-    myFile = SD.open("test5.txt");
+    myFile = SD.open("test.txt");
     if (myFile) {
       Serial.println("Read:");
       // Reading the whole file
