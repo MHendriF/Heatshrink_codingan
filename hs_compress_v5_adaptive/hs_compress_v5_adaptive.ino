@@ -93,11 +93,11 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       Serial.print(polled);
       Serial.print(F(" \n")); 
       
-      Serial.print("Compressed data: ");
-      for(int i = 0; i < polled; i++){
-        Serial.print(comp[i]);
-        Serial.print(", ");
-      }Serial.println();
+//      Serial.print("Compressed data: ");
+//      for(int i = 0; i < polled; i++){
+//        Serial.print(comp[i]);
+//        Serial.print(", ");
+//      }Serial.println();
     }
     free(comp);
     heatshrink_encoder_free(hse);
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
           cfg_info cfg;
           cfg.log_lvl = 1;
           cfg.decoder_input_buffer_size = 64;
-          if(buffer_size >= 584 and buffer_size < 980){
+          if(buffer_size < 980){
             cfg.window_sz2 = 9;
             cfg.lookahead_sz2 = 8;
           }
@@ -170,8 +170,9 @@ int main(int argc, char **argv)
             cfg.lookahead_sz2 = 6;
           }
           else if(buffer_size > 1640){
-            cfg.window_sz2 = 6;
-            cfg.lookahead_sz2 = 5;
+            Serial.println("Error. Panjang data maksimal 1640");
+            //cfg.window_sz2 = 4;
+            //cfg.lookahead_sz2 = 3;
           }
                
           //uint32_t t1 = micros();
