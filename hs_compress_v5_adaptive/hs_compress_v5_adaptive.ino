@@ -54,7 +54,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     
     if (cfg->log_lvl > 1) {
         Serial.print(F("\n^^ COMPRESSING\n"));
-        dump_buf("input", input, input_size);
+        //dump_buf("input", input, input_size);
     }
     
     while (sunk < input_size) {
@@ -93,11 +93,11 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
       Serial.print(polled);
       Serial.print(F(" \n")); 
       
-//      Serial.print("Compressed data: ");
-//      for(int i = 0; i < polled; i++){
-//        Serial.print(comp[i]);
-//        Serial.print(", ");
-//      }Serial.println();
+      Serial.print("Compressed data: ");
+      for(int i = 0; i < polled; i++){
+        Serial.print(comp[i]);
+        Serial.print(", ");
+      }Serial.println();
     }
     free(comp);
     heatshrink_encoder_free(hse);
@@ -131,9 +131,9 @@ int main(int argc, char **argv)
     }
     
     // Create/Open file 
-    myFile = SD.open("test.txt", FILE_WRITE);
+    myFile = SD.open("test5.txt", FILE_WRITE);
     // Reading the file
-    myFile = SD.open("test.txt");
+    myFile = SD.open("test5.txt");
     
     if (myFile) {
       Serial.println("Read:");
@@ -157,23 +157,24 @@ int main(int argc, char **argv)
           cfg_info cfg;
           cfg.log_lvl = 1;
           cfg.decoder_input_buffer_size = 64;
-          if(buffer_size < 980){
-            cfg.window_sz2 = 9;
-            cfg.lookahead_sz2 = 8;
-          }
-          else if(buffer_size >= 980 and buffer_size <= 1345){
-            cfg.window_sz2 = 8;
-            cfg.lookahead_sz2 = 7;
-          }
-          else if(buffer_size > 1345 and buffer_size <= 1640){
-            cfg.window_sz2 = 7;
-            cfg.lookahead_sz2 = 6;
-          }
-          else if(buffer_size > 1640){
-            Serial.println("Error. Panjang data maksimal 1640");
-            //cfg.window_sz2 = 4;
-            //cfg.lookahead_sz2 = 3;
-          }
+          cfg.window_sz2 = 4;
+          cfg.lookahead_sz2 = 3;
+            
+//          if(buffer_size < 980){
+//            cfg.window_sz2 = 9;
+//            cfg.lookahead_sz2 = 8;
+//          }
+//          else if(buffer_size >= 980 and buffer_size <= 1345){
+//            cfg.window_sz2 = 8;
+//            cfg.lookahead_sz2 = 7;
+//          }
+//          else if(buffer_size > 1345 and buffer_size <= 1640){
+//            cfg.window_sz2 = 7;
+//            cfg.lookahead_sz2 = 6;
+//          }
+//          else if(buffer_size > 1640){
+//            Serial.println("Error. Panjang data maksimal 1640");
+//          }
                
           //uint32_t t1 = micros();
           polled = compress_and_expand_and_check(test_data, length_data, &cfg);
