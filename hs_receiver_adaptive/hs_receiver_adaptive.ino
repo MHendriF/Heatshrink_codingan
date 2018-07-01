@@ -26,13 +26,11 @@ typedef struct {
     size_t decoder_input_buffer_size;
 } cfg_info;
 
-//void removeChar(char * string, char letter);
 static void removeChar(char * string, char letter ) {
   for( unsigned int i = 0; i < strlen( string ); i++ )
     if( string[i] == letter )
       strcpy( string + i, string + i + 1 );
 }
-
 
 static void dump_buf(char *name, uint8_t *buf, uint16_t count) {
     for (int i=0; i<count; i++) {
@@ -108,7 +106,8 @@ static void decompress_and_expand_and_check(uint8_t *comp, uint32_t input_size, 
         Serial.print(F("FAIL: Decompressed length does not match original input length!"));
     }
 
-    if (cfg->log_lvl > 1) dump_buf("decomp", decomp, polled);
+    if (cfg->log_lvl > 1) 
+      dump_buf("decomp", decomp, polled);
 
     if (cfg->log_lvl > 0){
         Serial.print(F("in: "));

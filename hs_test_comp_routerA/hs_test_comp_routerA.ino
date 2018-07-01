@@ -1,7 +1,3 @@
-// Demo Code for Heatshrink (Copyright (c) 2013-2015, Scott Vokes <vokes.s@gmail.com>)
-// embedded compression library
-// Craig Versek, Apr. 2016
-
 #include <stdint.h>
 #include <ctype.h>
 #include <Arduino.h>
@@ -16,7 +12,7 @@
 File myFile;
 int pinCS = 53; // Pin 10 on Arduino Uno
 
-#define arduinoLED 13   // Arduino LED on board
+#define arduinoLED 13
 
 /******************************************************************************/
 // TEST CODE from adapted from test_heatshrink_dynamic.c
@@ -54,7 +50,7 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     
     if (cfg->log_lvl > 1) {
         Serial.print(F("\n^^ COMPRESSING\n"));
-        //dump_buf("input", input, input_size);
+        dump_buf("input", input, input_size);
     }
     
     while (sunk < input_size) {
@@ -86,29 +82,26 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
             heatshrink_encoder_finish(hse);
         }
     }
-    if (cfg->log_lvl > 0){
-      Serial.print(F("in: "));
-      Serial.print(input_size);
-      Serial.print(F(" compressed: "));
-      Serial.print(polled);
-      Serial.print(F(" \n")); 
-      
+//    if (cfg->log_lvl > 0){
+//      Serial.print(F("in: "));
+//      Serial.print(input_size);
+//      Serial.print(F(" compressed: "));
+//      Serial.print(polled);
+//      Serial.print(F(" \n")); 
+//      
 //      Serial.print("Compressed data: ");
 //      for(int i = 0; i < polled; i++){
 //        Serial.print(comp[i]);
 //        Serial.print(", ");
 //      }Serial.println();
-    }
+//    }
 
-//    Serial.print("x");
-//    Serial.print(input_size);
-//    Serial.print("\n");
-    
     //Serial.println("Compressed data: ");
     Serial.print(comp[0]);
+    Serial.print("A");
     Serial.print("\n");
     for(int i = 1; i < polled; i++){
-        if(i % 16 == 0){
+        if(i % 11 == 0){
           Serial.print(comp[i]);
           Serial.print("\n");
           delay(3000);
@@ -119,124 +112,90 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
     delay(3000);
     
-    //lenght data original
+    //Lenght data original
     Serial.print("a");
     Serial.print(input_size);
+    Serial.print("A");
     Serial.print("\n");
-
-    //config
+    //Config
     Serial.print("b");
     Serial.print(cfg->window_sz2);
+    Serial.print("A");
     Serial.print("\n");
     Serial.print("c");
     Serial.print(cfg->lookahead_sz2);
+    Serial.print("A");
     Serial.print("\n");
     Serial.print("d");
     Serial.print(cfg->decoder_input_buffer_size);
+    Serial.print("A");
     Serial.print("\n");
-
     //Polled
     Serial.print("f");
     Serial.print(polled);
+    Serial.print("A");
     Serial.print("\n");
     
-    //Node 1
-   // g = 1;
-    Serial.print("g");
-    Serial.print(1);
-    Serial.print("\n");
-          
     free(comp);
     heatshrink_encoder_free(hse);
-    //return polled;
 }
-
-/******************************************************************************/
 int main(int argc, char **argv)
 {
     init(); // this is needed
 
     pinMode(arduinoLED, OUTPUT);      // Configure the onboard LED for output
     digitalWrite(arduinoLED, LOW);    // default to LED off
-
     Serial.begin(9600);
-    pinMode(pinCS, OUTPUT);
-
-    uint32_t buffer_size;
+    delay(1000);
     uint32_t length_data;
-    uint32_t comp_size;
-    String bufferSD;
-    int base = 15;
-    int g = 0; //node
     
-    // SD Card Initialization
-    if (SD.begin()){
-      //Serial.println("SD card is ready to use.");
-    } else{
-      Serial.println("SD card initialization failed");
-      return;
-    }
-    size_t polled = 0;
-
-     // Create/Open file 
-    myFile = SD.open("test.txt", FILE_WRITE);
-
-    int iterate = 0;
-    // Reading the file
-    myFile = SD.open("test.txt");
-    if (myFile) {
-      //Serial.println("Read:");
-      // Reading the whole file
-      while (myFile.available()) {
-          iterate++;
-         
-          bufferSD = myFile.readStringUntil('\n');
-          //Serial.println(bufferSD); //Printing for debugging purpose
-         
-          buffer_size = bufferSD.length();
-          char test_data [buffer_size];
-          comp_size = buffer_size;
-
-          //Prepare to commpression
-          bufferSD.toCharArray(test_data, buffer_size);
-          length_data = sizeof(test_data)/sizeof(test_data[0]);
-          //Serial.println(length_data);
+    uint8_t data [] = {152, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 130, 192, 0};
+    length_data = sizeof(data)/sizeof(data[0]);
     
-          cfg_info cfg;
-          cfg.log_lvl = 0;
-          cfg.decoder_input_buffer_size = 64;
-          if(buffer_size >= 584 and buffer_size < 980){
-            cfg.window_sz2 = 9;
-            cfg.lookahead_sz2 = 8;
-          }
-          else if(buffer_size >= 980 and buffer_size <= 1345){
-            cfg.window_sz2 = 8;
-            cfg.lookahead_sz2 = 7;
-          }
-          else if(buffer_size > 1345 and buffer_size <= 1870){
-            cfg.window_sz2 = 7;
-            cfg.lookahead_sz2 = 6;
-          }
-          else{
-            Serial.print("Data terlalu besar");
-            delay(4000);
-            return 0;
-          }
-          compress_and_expand_and_check(test_data, length_data, &cfg);
-          memset(test_data, 0, buffer_size);
-          
-          delay(6000);
-      }
-      myFile.close();
+    Serial.print(data[0]);
+    Serial.print("A");
+    Serial.print("\n");
+    for(int i = 1; i < length_data; i++){
+        if(i % 11 == 0){
+          Serial.print(data[i]);
+          Serial.print("A");
+          Serial.print("\n");
+          delay(5000);
+        }else{
+          Serial.print(data[i]);
+          Serial.print("A");
+          Serial.print("\n");
+        }
     }
-    else {
-      Serial.println("error opening test.txt");
-    }
+    delay(5000);
 
-    for ( ;; ){
-      //Serial.print("a100");
-      //Serial.print("\n");
+    //Length data original
+    Serial.print("a");
+    Serial.print("584");
+    Serial.print("A");
+    Serial.print("\n");
+    //Config
+    Serial.print("b");
+    Serial.print("4");
+    Serial.print("A");
+    Serial.print("\n");
+    Serial.print("c");
+    Serial.print("3");
+    Serial.print("A");
+    Serial.print("\n");
+    Serial.print("d");
+    Serial.print("64");
+    Serial.print("A");
+    Serial.print("\n");
+    //Polled
+    Serial.print("f");
+    Serial.print("76");
+    Serial.print("A");
+    Serial.print("\n");
+    
+    for ( ;; )
+    {
       delay(3000);
-    }
-        
+    }   
+
 }
