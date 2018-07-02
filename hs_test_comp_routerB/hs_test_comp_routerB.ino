@@ -26,14 +26,14 @@ int main(int argc, char **argv)
           Serial.print(data[i]);
           Serial.print("B");
           Serial.print("\n");
-          delay(5000);
+          delay(10000);
         }else{
           Serial.print(data[i]);
           Serial.print("B");
           Serial.print("\n");
         }
     }
-    delay(5000);
+    delay(10000);
 
     //Length data original
     Serial.print("a");

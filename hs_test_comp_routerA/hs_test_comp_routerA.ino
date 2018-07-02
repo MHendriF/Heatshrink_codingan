@@ -82,35 +82,37 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
             heatshrink_encoder_finish(hse);
         }
     }
-//    if (cfg->log_lvl > 0){
-//      Serial.print(F("in: "));
-//      Serial.print(input_size);
-//      Serial.print(F(" compressed: "));
-//      Serial.print(polled);
-//      Serial.print(F(" \n")); 
-//      
-//      Serial.print("Compressed data: ");
-//      for(int i = 0; i < polled; i++){
-//        Serial.print(comp[i]);
-//        Serial.print(", ");
-//      }Serial.println();
-//    }
+    if (cfg->log_lvl > 0){
+      Serial.print(F("in: "));
+      Serial.print(input_size);
+      Serial.print(F(" compressed: "));
+      Serial.print(polled);
+      Serial.print(F(" \n")); 
+      
+      Serial.print("Compressed data: ");
+      for(int i = 0; i < polled; i++){
+        Serial.print(comp[i]);
+        Serial.print(", ");
+      }Serial.println();
+    }
 
     //Serial.println("Compressed data: ");
-    Serial.print(comp[0]);
-    Serial.print("A");
-    Serial.print("\n");
-    for(int i = 1; i < polled; i++){
-        if(i % 11 == 0){
-          Serial.print(comp[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(comp[i]);
-          Serial.print("\n");
-        }
-    }
-    delay(3000);
+//    Serial.print(comp[0]);
+//    Serial.print("A");
+//    Serial.print("\n");
+//    for(int i = 1; i < polled; i++){
+//        if(i % 11 == 0){
+//          Serial.print(comp[i]);
+//          Serial.print("A");
+//          Serial.print("\n");
+//          delay(10000);
+//        }else{
+//          Serial.print(comp[i]);
+//          Serial.print("A");
+//          Serial.print("\n");
+//        }
+//    }
+//    delay(10000);
     
     //Lenght data original
     Serial.print("a");
@@ -146,52 +148,116 @@ int main(int argc, char **argv)
     pinMode(arduinoLED, OUTPUT);      // Configure the onboard LED for output
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
-    delay(1000);
-    uint32_t length_data;
-    
-    uint8_t data [] = {152, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 130, 192, 0};
-    length_data = sizeof(data)/sizeof(data[0]);
-    
-    Serial.print(data[0]);
-    Serial.print("A");
-    Serial.print("\n");
-    for(int i = 1; i < length_data; i++){
-        if(i % 11 == 0){
-          Serial.print(data[i]);
-          Serial.print("A");
-          Serial.print("\n");
-          delay(5000);
-        }else{
-          Serial.print(data[i]);
-          Serial.print("A");
-          Serial.print("\n");
-        }
-    }
-    delay(5000);
+    pinMode(pinCS, OUTPUT);
 
-    //Length data original
-    Serial.print("a");
-    Serial.print("584");
-    Serial.print("A");
-    Serial.print("\n");
-    //Config
-    Serial.print("b");
-    Serial.print("4");
-    Serial.print("A");
-    Serial.print("\n");
-    Serial.print("c");
-    Serial.print("3");
-    Serial.print("A");
-    Serial.print("\n");
-    Serial.print("d");
-    Serial.print("64");
-    Serial.print("A");
-    Serial.print("\n");
-    //Polled
-    Serial.print("f");
-    Serial.print("76");
-    Serial.print("A");
-    Serial.print("\n");
+    uint32_t length_data;
+    uint32_t buffer_size;
+    uint32_t comp_size;
+    String bufferSD;
+    size_t polled = 0;
+    int iterate = 0;
+
+    // SD Card Initialization
+    if (SD.begin()){
+      //Serial.println("SD card is ready to use.");
+    } else{
+      Serial.println("SD card initialization failed");
+      return;
+    }
+
+    // Reading the file
+    myFile = SD.open("test2.txt");
+    if (myFile) {
+      // Reading the whole file
+      while (myFile.available()) {
+          iterate++;
+         
+          bufferSD = myFile.readStringUntil('\n');
+          //Serial.println(bufferSD); //Printing for debugging purpose
+         
+          buffer_size = bufferSD.length();
+          char test_data [buffer_size];
+          comp_size = buffer_size;
+
+          //Prepare to commpression
+          bufferSD.toCharArray(test_data, buffer_size);
+          length_data = sizeof(test_data)/sizeof(test_data[0]);
+          //Serial.println(length_data);
+    
+          cfg_info cfg;
+          cfg.log_lvl = 1;
+          cfg.decoder_input_buffer_size = 64;
+          if(buffer_size >= 584 and buffer_size < 980){
+            cfg.window_sz2 = 9;
+            cfg.lookahead_sz2 = 8;
+          }
+          else if(buffer_size >= 980 and buffer_size <= 1345){
+            cfg.window_sz2 = 8;
+            cfg.lookahead_sz2 = 7;
+          }
+          else if(buffer_size > 1345 and buffer_size <= 1870){
+            cfg.window_sz2 = 7;
+            cfg.lookahead_sz2 = 6;
+          }
+          else{
+            Serial.print("Data terlalu besar");
+            delay(4000);
+            return 0;
+          }
+          compress_and_expand_and_check(test_data, length_data, &cfg);
+          memset(test_data, 0, buffer_size);
+          
+          delay(6000);
+      }
+      myFile.close();
+    }
+    else {
+      Serial.println("error opening test.txt");
+    }
+    
+//    uint8_t data [] = {152, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 130, 192, 0};
+//    length_data = sizeof(data)/sizeof(data[0]);
+//    
+//    Serial.print(data[0]);
+//    Serial.print("A");
+//    Serial.print("\n");
+//    for(int i = 1; i < length_data; i++){
+//        if(i % 11 == 0){
+//          Serial.print(data[i]);
+//          Serial.print("A");
+//          Serial.print("\n");
+//          delay(10000);
+//        }else{
+//          Serial.print(data[i]);
+//          Serial.print("A");
+//          Serial.print("\n");
+//        }
+//    }
+//    delay(10000);
+//
+//    //Length data original
+//    Serial.print("a");
+//    Serial.print("584");
+//    Serial.print("A");
+//    Serial.print("\n");
+//    //Config
+//    Serial.print("b");
+//    Serial.print("4");
+//    Serial.print("A");
+//    Serial.print("\n");
+//    Serial.print("c");
+//    Serial.print("3");
+//    Serial.print("A");
+//    Serial.print("\n");
+//    Serial.print("d");
+//    Serial.print("64");
+//    Serial.print("A");
+//    Serial.print("\n");
+//    //Polled
+//    Serial.print("f");
+//    Serial.print("76");
+//    Serial.print("A");
+//    Serial.print("\n");
     
     for ( ;; )
     {

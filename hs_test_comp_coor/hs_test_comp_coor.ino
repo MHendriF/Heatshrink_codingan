@@ -110,12 +110,12 @@ static void decompress_and_expand_and_check(uint8_t *comp, uint32_t input_size, 
         Serial.print(polled);
         Serial.print(F(" \n")); 
 
-        Serial.print("Decompressed data: ");
-        for(int i = 0; i < polled; i++){
-          Serial.print(decomp[i]);
-          Serial.print(", ");
-        }
-        Serial.println();
+//        Serial.print("Decompressed data: ");
+//        for(int i = 0; i < polled; i++){
+//          Serial.print(decomp[i]);
+//          Serial.print(", ");
+//        }
+//        Serial.println();
     }
     free(decomp);
     heatshrink_decoder_free(hsd);
@@ -270,28 +270,9 @@ int main(int argc, char **argv)
                   Serial.print(decoder_A);
                   Serial.print("f:");
                   Serial.print(polled_A);
-    
-                  if(polled_A != 0 && window_A != 0 && lookahead_A != 0 && decoder_A !=0){
-                     Serial.print(F("\n^^Dekompresi Node A Start!\n"));
-                     //convert to 
-                     for(i = 0; i < polled_A; i++){
-                        nodeA[i] = (uint8_t) num_A[i];
-                     }
-                     cfg_info cfg;
-                     cfg.log_lvl = 1;
-                     cfg.window_sz2 = window_A;
-                     cfg.lookahead_sz2 = lookahead_A;
-                     cfg.decoder_input_buffer_size = decoder_A;
-                     decompress_and_expand_and_check(nodeA, orig_A, &cfg,  polled_A);
-      
-                     Serial.print(F("\n^^ Selesai\n"));
-                     //reinisialite
-                     orig_A = 0, window_A = 0, lookahead_A = 0, decoder_A = 0, polled_A = 0;
-                     idx_A = 0;
-                  }
                 }
                 else if(polled_A != 0 && window_A != 0 && lookahead_A != 0 && decoder_A !=0){
-                    Serial.print(F("\n^^Dekompresi Node A Start2!\n"));
+                    Serial.print(F("^^ Dekompresi Node A Start!\n"));
                     for(i = 0; i < polled_A; i++){
                         nodeA[i] = (uint8_t) num_A[i];
                     }
@@ -301,8 +282,7 @@ int main(int argc, char **argv)
                     cfg.lookahead_sz2 = lookahead_A;
                     cfg.decoder_input_buffer_size = decoder_A;
                     decompress_and_expand_and_check(nodeA, orig_A, &cfg,  polled_A);
-                    delay(5000);
-                    Serial.print(F("\n^^ Selesai\n"));
+                    Serial.print(F("^^ Selesai\n"));
                     //reinisialite
                     orig_A = 0, window_A = 0, lookahead_A = 0, decoder_A = 0, polled_A = 0;
                     idx_A = 0;
@@ -333,28 +313,9 @@ int main(int argc, char **argv)
                   Serial.print(decoder_B);
                   Serial.print("f:");
                   Serial.print(polled_B);
-    
-                  if(polled_B != 0 && window_B != 0 && lookahead_B != 0 && decoder_B !=0){
-                     Serial.print(F("\n^^Dekompresi Node B Start!\n"));
-                     //convert to 
-                     for(i = 0; i < polled_B; i++){
-                        nodeB[i] = (uint8_t) num_B[i];
-                     }
-                     cfg_info cfg2;
-                     cfg2.log_lvl = 1;
-                     cfg2.window_sz2 = window_B;
-                     cfg2.lookahead_sz2 = lookahead_B;
-                     cfg2.decoder_input_buffer_size = decoder_B;
-                     decompress_and_expand_and_check(nodeB, orig_B, &cfg2,  polled_B);
-      
-                     Serial.print(F("\n^^ Selesai\n"));
-                     //reinisialite
-                     orig_B = 0, window_B = 0, lookahead_B = 0, decoder_B = 0, polled_B = 0;
-                     idx_B = 0;
-                  }
                 }
                 else if(polled_B != 0 && window_B != 0 && lookahead_B != 0 && decoder_B !=0){
-                    Serial.print(F("\n^^Dekompresi Node B Start2!\n"));
+                    Serial.print(F("^^ Dekompresi Node B Start!\n"));
                     for(i = 0; i < polled_B; i++){
                         nodeB[i] = (uint8_t) num_B[i];
                     }
@@ -365,7 +326,7 @@ int main(int argc, char **argv)
                     cfg.decoder_input_buffer_size = decoder_B;
                     decompress_and_expand_and_check(nodeB, orig_B, &cfg,  polled_B);
     
-                    Serial.print(F("\n^^ Selesai\n"));
+                    Serial.print(F("^^ Selesai\n"));
                     //reinisialite
                     orig_B = 0, window_B = 0, lookahead_B = 0, decoder_B = 0, polled_B = 0;
                     idx_B = 0;
@@ -374,7 +335,7 @@ int main(int argc, char **argv)
                   Serial.print(num_B[polled_B-1]);
                   Serial.print(" ");
                   Serial.print(num_B[polled_B]);
-                  Serial.print(F("\n^^ Ampas B\n"));
+                  Serial.print(F("^^ Ampas B\n"));
                 }
             }
             delay(1000);
