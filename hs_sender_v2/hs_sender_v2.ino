@@ -11,7 +11,7 @@
 #include <heatshrink_decoder.h>
 #include <greatest.h>
 
-#define arduinoLED 13   // Arduino LED on board
+#define arduinoLED 9   // Arduino LED on board
 
 /******************************************************************************/
 // TEST CODE from adapted from test_heatshrink_dynamic.c
@@ -95,25 +95,25 @@ static int compress_and_expand_and_check(uint8_t *input,
         Serial.print(", ");
       }Serial.println();
 
-      Serial.print(output[0]);
-      Serial.print("\n");
-      for(int i = 1; i < polled; i++){
-        if(i % 13 == 0){
-          Serial.print(output[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(output[i]);
-          Serial.print("\n");
-        }
-      }
+//      Serial.print(output[0]);
+//      Serial.print("\n");
+//      for(int i = 1; i < polled; i++){
+//        if(i % 13 == 0){
+//          Serial.print(output[i]);
+//          Serial.print("\n");
+//          delay(3000);
+//        }else{
+//          Serial.print(output[i]);
+//          Serial.print("\n");
+//        }
+//      }
     }
     return polled;
 }
 
 
 /******************************************************************************/
-#define BUFFER_SIZE 1345
+#define BUFFER_SIZE 400
 uint8_t orig_buffer[BUFFER_SIZE];
 uint8_t comp_buffer[BUFFER_SIZE];
 
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     size_t polled = 0;
     
     cfg_info cfg;
-    cfg.log_lvl = 0;
+    cfg.log_lvl = 1;
     cfg.window_sz2 = 4;
     cfg.lookahead_sz2 = 3;
      
@@ -173,22 +173,22 @@ int main(int argc, char **argv)
 //    }
     cfg.decoder_input_buffer_size = 64;
     polled = compress_and_expand_and_check(orig_buffer, length_data, &cfg, comp_buffer, comp_size);
-    //Serial.print(polled);
+    Serial.print(polled);
 
     //Serial.println("Compressed data: ");
-    Serial.print(comp_buffer[0]);
-    Serial.print("\n");
-    for(int i = 1; i < polled; i++){
-        if(i % base == 0){
-          Serial.print(comp_buffer[i]);
-          Serial.print("\n");
-          delay(3000);
-        }else{
-          Serial.print(comp_buffer[i]);
-          Serial.print("\n");
-        }
-    }
-    delay(3000);
+//    Serial.print(comp_buffer[0]);
+//    Serial.print("\n");
+//    for(int i = 1; i < polled; i++){
+//        if(i % base == 0){
+//          Serial.print(comp_buffer[i]);
+//          Serial.print("\n");
+//          delay(3000);
+//        }else{
+//          Serial.print(comp_buffer[i]);
+//          Serial.print("\n");
+//        }
+//    }
+//    delay(3000);
     
     //lenght data original
     Serial.print("a");

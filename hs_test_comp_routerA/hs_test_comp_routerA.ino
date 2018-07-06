@@ -97,22 +97,22 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     }
 
     //Serial.println("Compressed data: ");
-//    Serial.print(comp[0]);
-//    Serial.print("A");
-//    Serial.print("\n");
-//    for(int i = 1; i < polled; i++){
-//        if(i % 11 == 0){
-//          Serial.print(comp[i]);
-//          Serial.print("A");
-//          Serial.print("\n");
-//          delay(10000);
-//        }else{
-//          Serial.print(comp[i]);
-//          Serial.print("A");
-//          Serial.print("\n");
-//        }
-//    }
-//    delay(10000);
+    Serial.print(comp[0]);
+    Serial.print("A");
+    Serial.print("\n");
+    for(int i = 1; i < polled; i++){
+        if(i % 11 == 0){
+          Serial.print(comp[i]);
+          Serial.print("A");
+          Serial.print("\n");
+          delay(10000);
+        }else{
+          Serial.print(comp[i]);
+          Serial.print("A");
+          Serial.print("\n");
+        }
+    }
+    delay(10000);
     
     //Lenght data original
     Serial.print("a");
@@ -141,6 +141,8 @@ static int compress_and_expand_and_check(uint8_t *input, uint32_t input_size, cf
     free(comp);
     heatshrink_encoder_free(hse);
 }
+
+
 int main(int argc, char **argv)
 {
     init(); // this is needed
@@ -185,7 +187,7 @@ int main(int argc, char **argv)
           //Serial.println(length_data);
     
           cfg_info cfg;
-          cfg.log_lvl = 1;
+          cfg.log_lvl = 0;
           cfg.decoder_input_buffer_size = 64;
           if(buffer_size >= 584 and buffer_size < 980){
             cfg.window_sz2 = 9;
@@ -207,57 +209,13 @@ int main(int argc, char **argv)
           compress_and_expand_and_check(test_data, length_data, &cfg);
           memset(test_data, 0, buffer_size);
           
-          delay(6000);
+          delay(4000);
       }
       myFile.close();
     }
     else {
       Serial.println("error opening test.txt");
     }
-    
-//    uint8_t data [] = {152, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 130, 192, 0};
-//    length_data = sizeof(data)/sizeof(data[0]);
-//    
-//    Serial.print(data[0]);
-//    Serial.print("A");
-//    Serial.print("\n");
-//    for(int i = 1; i < length_data; i++){
-//        if(i % 11 == 0){
-//          Serial.print(data[i]);
-//          Serial.print("A");
-//          Serial.print("\n");
-//          delay(10000);
-//        }else{
-//          Serial.print(data[i]);
-//          Serial.print("A");
-//          Serial.print("\n");
-//        }
-//    }
-//    delay(10000);
-//
-//    //Length data original
-//    Serial.print("a");
-//    Serial.print("584");
-//    Serial.print("A");
-//    Serial.print("\n");
-//    //Config
-//    Serial.print("b");
-//    Serial.print("4");
-//    Serial.print("A");
-//    Serial.print("\n");
-//    Serial.print("c");
-//    Serial.print("3");
-//    Serial.print("A");
-//    Serial.print("\n");
-//    Serial.print("d");
-//    Serial.print("64");
-//    Serial.print("A");
-//    Serial.print("\n");
-//    //Polled
-//    Serial.print("f");
-//    Serial.print("76");
-//    Serial.print("A");
-//    Serial.print("\n");
     
     for ( ;; )
     {

@@ -128,7 +128,7 @@ int main(int argc, char **argv)
     digitalWrite(arduinoLED, LOW);    // default to LED off
     Serial.begin(9600);
 
-    uint8_t nodeA[1600], nodeB[600];
+    uint8_t nodeA[1400], nodeB[600];
     size_t polled_A = 0, polled_B = 0;
     String stringOne;
     char incomingByte;

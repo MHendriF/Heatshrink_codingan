@@ -7,7 +7,7 @@
 #include <SPI.h>
 File myFile;
 String buffer;
-int pinCS = 53; // Pin 10 on Arduino Uno
+int pinCS = 10; // Pin 10 on Arduino Uno  //53 Mega
 
 void setup() {
     
@@ -25,10 +25,10 @@ void setup() {
   }
   
   // Create/Open file 
-  myFile = SD.open("test5.txt", FILE_WRITE);
+  myFile = SD.open("test.txt", FILE_WRITE);
   
   // Reading the file
-  myFile = SD.open("test5.txt");
+  myFile = SD.open("test.txt");
   if (myFile) {
     Serial.println("Read:");
     // Reading the whole file
