@@ -179,11 +179,11 @@ int main(int argc, char **argv)
     size_t polled = 0;
 
      // Create/Open file 
-    myFile = SD.open("test.txt", FILE_WRITE);
+    myFile = SD.open("testing.txt", FILE_WRITE);
 
     int iterate = 0;
     // Reading the file
-    myFile = SD.open("test.txt");
+    myFile = SD.open("testing.txt");
     if (myFile) {
       //Serial.println("Read:");
       // Reading the whole file
